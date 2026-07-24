@@ -4,249 +4,368 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Athar - Campaign Details</title>
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts (Poppins & Outfit) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             brand: {
-              dark: '#1E4247',
-              light: '#28585E',
-              accent: '#E6A122',
-              bg: '#F5F7FA'
+              dark: '#0A3A45',      // اللون الكحلي/الزيتي الأساسي
+              yellow: '#FFC107',    // اللون الأصفر المعتمد
+              bg: '#F7F9FA',        // خلفية الصفحة
+              sub: '#5C6B73',       // لون النصوص الفرعية
+              red: '#EE1D52'        // لون الأخطاء أو التنبيهات
             }
+          },
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
           }
         }
       }
     }
   </script>
 </head>
-<body class="bg-brand-bg text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-brand-bg font-poppins text-brand-dark min-h-screen flex flex-col justify-between antialiased">
 
-  <!-- Header / Navbar -->
-  <header class="bg-brand-dark text-white shadow-md">
+  <!-- 1️⃣ Header / Navbar -->
+  <header class="bg-brand-dark text-white shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      
       <!-- Logo -->
-      <div class="flex items-center gap-2">
-        <div class="w-10 h-10 rounded-full bg-brand-accent flex items-center justify-center font-bold text-brand-dark">A</div>
-        <span class="font-bold text-xl tracking-wide">Athar</span>
+      <div class="flex items-center gap-3 cursor-pointer">
+        <div class="w-9 h-9 rounded-full bg-brand-yellow flex items-center justify-center font-bold text-brand-dark text-lg">
+          A
+        </div>
+        <span class="font-bold text-2xl tracking-wide">Athar</span>
       </div>
       
-      <!-- Navigation -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-        <a href="#" class="hover:text-brand-accent transition">Home</a>
-        <a href="#" class="hover:text-brand-accent transition">Organization</a>
-        <a href="#" class="text-brand-accent border-b-2 border-brand-accent pb-1">Campaigns</a>
-        <a href="#" class="hover:text-brand-accent transition">My campaigns</a>
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-normal text-gray-200">
+        <a href="#" class="hover:text-brand-yellow transition-colors">Home</a>
+        <a href="#" class="hover:text-brand-yellow transition-colors">Organization</a>
+        <a href="#" class="text-brand-yellow font-semibold border-b-2 border-brand-yellow pb-1">Campaigns</a>
+        <a href="#" class="hover:text-brand-yellow transition-colors">My campaigns</a>
       </nav>
 
-      <!-- Actions -->
-      <div class="flex items-center gap-4 text-sm">
-        <button class="relative hover:text-brand-accent"><i class="fa-regular fa-bell text-lg"></i><span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span></button>
-        <button class="flex items-center gap-1 hover:text-brand-accent"><i class="fa-regular fa-user text-lg"></i></button>
-        <span class="text-xs uppercase font-semibold">EN <i class="fa-solid fa-chevron-down text-[10px]"></i></span>
+      <!-- User Actions -->
+      <div class="flex items-center gap-5 text-sm">
+        <button class="relative hover:text-brand-yellow transition-colors cursor-pointer">
+          <i class="fa-regular fa-bell text-lg"></i>
+          <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <button class="hover:text-brand-yellow transition-colors cursor-pointer">
+          <i class="fa-regular fa-user text-lg"></i>
+        </button>
+        <div class="flex items-center gap-1 cursor-pointer hover:text-brand-yellow transition-colors text-xs font-semibold">
+          <span>EN</span>
+          <i class="fa-solid fa-chevron-down text-[10px]"></i>
+        </div>
       </div>
+
     </div>
   </header>
 
-  <!-- Main Content Area -->
-  <main class="max-w-7xl mx-auto px-6 py-8 w-full flex-grow space-y-8">
+  <!-- 2️⃣ Main Content -->
+  <main class="max-w-7xl mx-auto px-6 py-6 w-full flex-grow space-y-8">
 
     <!-- Back Button -->
     <div>
-      <button onclick="history.back()" class="text-gray-600 hover:text-brand-dark transition">
-        <i class="fa-solid fa-arrow-left text-xl"></i>
+      <button onclick="window.history.back()" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-brand-dark hover:bg-brand-yellow hover:text-white transition-all cursor-pointer">
+        <i class="fa-solid fa-arrow-left"></i>
       </button>
     </div>
 
-    <!-- Main Campaign Banner Card -->
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-8 items-center justify-between">
+    <!-- Top Card: Campaign Overview & Image -->
+    <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-8 items-stretch">
       
-      <!-- Left Details -->
-      <div class="flex-1 space-y-6 w-full">
-        <div class="flex items-center justify-between flex-wrap gap-2">
-          <h1 id="campaign-title" class="text-3xl font-bold text-brand-dark">Tree Planting Campaign</h1>
-          <span id="campaign-status" class="bg-brand-accent text-white text-xs px-3 py-1 rounded-full font-semibold">On-Going</span>
+      <!-- Left Column: Info & Details -->
+      <div class="flex-1 flex flex-col justify-between space-y-5">
+        
+        <!-- Title & On-Ground Badge -->
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <h1 class="text-2xl md:text-3xl font-semibold text-brand-dark">Tree Planting Campaign</h1>
+          
+          <!-- 🏷️ شارة نوع الحملة (On-Ground) -->
+          <div class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-yellow text-brand-dark text-[12px] font-bold shadow-sm uppercase tracking-wider">
+            <i class="fa-solid fa-location-dot text-[13px]"></i>
+            <span>On-Ground</span>
+          </div>
         </div>
 
+        <!-- Organization Info -->
         <div class="flex items-center gap-3">
-          <img id="org-logo-small" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border border-gray-200" alt="Org Logo">
-          <span id="org-name-small" class="font-semibold text-gray-700">The Lifa Organization</span>
+          <img src="https://via.placeholder.com/40" class="w-9 h-9 rounded-full object-cover border border-gray-200" alt="Org Logo">
+          <span class="font-medium text-[15px] text-brand-sub">The Lifa Organization</span>
         </div>
 
-        <hr class="border-gray-200">
+        <!-- Yellow Divider -->
+        <div class="border-t-2 border-brand-yellow opacity-80"></div>
 
-        <!-- Info Grid -->
-        <div class="grid grid-cols-3 gap-4 text-center divide-x divide-gray-200">
-          <div>
-            <p class="text-xs text-gray-400 font-medium">Date</p>
-            <p id="campaign-date" class="font-semibold text-sm mt-1">23/5/2026</p>
+        <!-- Info Grid 1 (Date, Location, Time) -->
+        <div class="grid grid-cols-3 text-center">
+          <div class="px-2">
+            <p class="text-[12px] text-brand-sub font-normal mb-1">Date</p>
+            <p class="font-semibold text-[14px] text-brand-dark">23/5/2026</p>
           </div>
-          <div>
-            <p class="text-xs text-gray-400 font-medium">Location</p>
-            <p id="campaign-location-short" class="font-semibold text-sm mt-1">Aleppo, The Public Park</p>
+          <div class="px-2 border-x-2 border-brand-yellow">
+            <p class="text-[12px] text-brand-sub font-normal mb-1">Location</p>
+            <p class="font-semibold text-[14px] text-brand-dark truncate">Aleppo, The Public Park</p>
           </div>
-          <div>
-            <p class="text-xs text-gray-400 font-medium">Time</p>
-            <p id="campaign-time" class="font-semibold text-sm mt-1">9:00 AM</p>
+          <div class="px-2">
+            <p class="text-[12px] text-brand-sub font-normal mb-1">Time</p>
+            <p class="font-semibold text-[14px] text-brand-dark">9:00 AM</p>
           </div>
         </div>
 
-        <hr class="border-gray-200">
+        <!-- Yellow Divider -->
+        <div class="border-t-2 border-brand-yellow opacity-80"></div>
 
-        <!-- Volunteers Grid -->
-        <div class="grid grid-cols-3 gap-4 text-center divide-x divide-gray-200">
+        <!-- Info Grid 2 (Volunteer Statistics) -->
+        <div class="grid grid-cols-3 text-center">
           <div>
-            <p class="text-xs text-gray-400 font-medium">Volunteer Needed</p>
-            <p id="volunteers-needed" class="font-semibold text-sm mt-1">60</p>
+            <p class="text-[12px] text-brand-sub font-normal mb-1">Volunteer Needed</p>
+            <p class="font-semibold text-[15px] text-brand-dark">60</p>
+          </div>
+          <div class="border-x-2 border-brand-yellow px-2">
+            <p class="text-[12px] text-brand-sub font-normal mb-1">Registered</p>
+            <p class="font-semibold text-[15px] text-brand-dark">44</p>
           </div>
           <div>
-            <p class="text-xs text-gray-400 font-medium">Registered</p>
-            <p id="volunteers-registered" class="font-semibold text-sm mt-1">44</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-400 font-medium">Remaining</p>
-            <p id="volunteers-remaining" class="font-semibold text-sm mt-1">26</p>
+            <p class="text-[12px] text-brand-sub font-normal mb-1">Remaining</p>
+            <p class="font-semibold text-[15px] text-brand-dark">16</p>
           </div>
         </div>
 
         <!-- Progress Bar -->
-        <div class="flex items-center gap-4">
-          <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
-            <div id="progress-bar" class="bg-brand-dark h-2.5 rounded-full" style="width: 77%"></div>
+        <div class="flex items-center gap-4 pt-1">
+          <div class="w-full bg-[#E5E9EB] h-2.5 rounded-full overflow-hidden">
+            <div class="bg-brand-dark h-2.5 rounded-full" style="width: 73%"></div>
           </div>
-          <span id="progress-percent" class="text-xs font-bold text-gray-600">77%</span>
+          <span class="text-[13px] font-bold text-brand-dark">73%</span>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Campaign Banner Image -->
+      <div class="relative w-full lg:w-[460px] min-h-[260px] rounded-[24px] overflow-hidden border-4 border-brand-dark shrink-0">
+        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover" alt="Campaign Banner">
+        
+        <!-- Rating Badge -->
+        <div class="absolute bottom-3 right-3 bg-brand-dark/90 text-white px-3 py-1.5 rounded-full text-[12px] flex items-center gap-1.5 shadow-md">
+          <i class="fa-solid fa-star text-brand-yellow"></i>
+          <span class="font-bold">5</span>
+          <span class="text-[#9BB0B5] font-light">| 100 Reviews</span>
         </div>
       </div>
 
-      <!-- Right Image Card -->
-      <div class="relative w-full lg:w-[480px] h-[300px] rounded-3xl overflow-hidden border-4 border-brand-dark shrink-0">
-        <img id="campaign-image" src="https://via.placeholder.com/500x300" class="w-full h-full object-cover" alt="Campaign Banner">
-        <div class="absolute bottom-4 right-4 bg-brand-dark/90 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow">
-          <i class="fa-solid fa-star text-brand-accent"></i>
-          <span id="campaign-rating">5</span>
-          <span class="text-gray-300">| <span id="campaign-reviews-count">100</span> Reviews</span>
-        </div>
-      </div>
     </div>
 
-    <!-- Middle Section: Content Details & Org Sidebar -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Middle Section: Tabs & Sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       
-      <!-- Main Content Tabs Area (2 Cols) -->
-      <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
+      <!-- Main Content Tabs Area -->
+      <div class="lg:col-span-2 bg-white rounded-[24px] p-8 shadow-sm border border-gray-100 flex flex-col justify-between min-h-[360px]">
         <div>
-          <!-- Dynamic Tabs -->
-          <div class="flex border-b border-gray-100 gap-8 mb-6 text-sm font-semibold">
-            <button onclick="switchTab('about')" id="tab-about-btn" class="pb-2 border-b-2 border-brand-dark text-brand-dark">About</button>
-            <button onclick="switchTab('requirements')" id="tab-req-btn" class="pb-2 text-gray-400 hover:text-brand-dark">Requirements</button>
-            <button onclick="switchTab('location')" id="tab-loc-btn" class="pb-2 text-gray-400 hover:text-brand-dark">Location</button>
+          <!-- Tab Navigation Buttons -->
+          <div class="flex border-b border-gray-200 gap-10 mb-6 text-[15px] font-medium">
+            <button onclick="switchTab('about')" id="btn-about" class="pb-3 text-brand-dark font-semibold border-b-2 border-brand-dark transition-colors cursor-pointer">
+              About
+            </button>
+            <button onclick="switchTab('requirements')" id="btn-requirements" class="pb-3 text-brand-sub hover:text-brand-dark transition-colors cursor-pointer">
+              Requirements
+            </button>
+            <button onclick="switchTab('location')" id="btn-location" class="pb-3 text-brand-sub hover:text-brand-dark transition-colors cursor-pointer">
+              Location
+            </button>
           </div>
 
-          <!-- Tab Contents -->
-          <div id="tab-content-about" class="space-y-4 text-sm text-gray-600 leading-relaxed">
-            <p id="campaign-description">
-              Join Us In Planting 500 Trees To Improve Air Quality, Expand Green Spaces, And Create A Healthier Environment For Future Generations...
+          <!-- Tab Content: About -->
+          <div id="tab-about" class="space-y-4 text-[14px] text-brand-sub leading-relaxed">
+            <p>
+              Join Us In Planting 500 Trees To Improve Air Quality, Expand Green Spaces, And Create A Healthier Environment For Future Generations. This Campaign Brings Volunteers Together To Make A Positive Impact On The Community And Promote Sustainable Living.
             </p>
-            <p class="font-bold text-gray-800">What You Will Do :</p>
-            <ul id="campaign-tasks" class="list-disc list-inside space-y-1">
-              <li>Plant Trees In Designated Areas.</li>
-              <li>Assist With Tools And Activity Preparation.</li>
-              <li>Help Clean And Organize The Area.</li>
+            <p class="font-semibold text-brand-dark pt-2">What You Will Do :</p>
+            <ul class="space-y-2 list-none pl-1">
+              <li class="flex items-start gap-2"><span class="text-brand-dark font-bold">•</span> Plant Trees In Designated Areas.</li>
+              <li class="flex items-start gap-2"><span class="text-brand-dark font-bold">•</span> Assist With Tools And Activity Preparation.</li>
+              <li class="flex items-start gap-2"><span class="text-brand-dark font-bold">•</span> Help Clean And Organize The Area.</li>
             </ul>
           </div>
 
-          <div id="tab-content-requirements" class="hidden text-sm text-gray-600">
-            <p id="campaign-requirements">Requirements dynamic info goes here...</p>
+          <!-- Tab Content: Requirements -->
+          <div id="tab-requirements" class="hidden space-y-3 text-[14px] text-brand-sub leading-relaxed">
+            <p class="font-semibold text-brand-dark">Volunteer Prerequisites:</p>
+            <p>• Age 18 and above or under supervision.</p>
+            <p>• Commitment to the scheduled time (9:00 AM - 1:00 PM).</p>
+            <p>• Capability to work outdoors in active environments.</p>
           </div>
 
-          <div id="tab-content-location" class="hidden text-sm text-gray-600">
-            <p id="campaign-location-full">Detailed address dynamic info goes here...</p>
+          <!-- Tab Content: Location -->
+          <div id="tab-location" class="hidden space-y-3 text-[14px] text-brand-sub leading-relaxed">
+            <p class="font-semibold text-brand-dark">Event Location & Meeting Point:</p>
+            <p class="flex items-center gap-2">
+              <i class="fa-solid fa-location-dot text-brand-yellow"></i>
+              <span>Aleppo - Public Park, Main Entrance near the central fountain.</span>
+            </p>
           </div>
         </div>
 
         <!-- Join Button -->
-        <div class="mt-8 text-center">
-          <button id="btn-join" onclick="handleJoinCampaign()" class="bg-brand-dark hover:bg-brand-light text-white font-medium px-10 py-3 rounded-xl transition shadow-md">
-            <i class="fa-solid fa-user-plus mr-2"></i> Join This Campaign
+        <div class="pt-8 text-center">
+          <button onclick="handleJoin()" class="bg-brand-dark hover:opacity-95 text-white font-medium text-[15px] px-10 py-3.5 rounded-[16px] transition-all shadow-md inline-flex items-center gap-2 cursor-pointer">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Join This Campaign</span>
           </button>
         </div>
       </div>
 
-      <!-- Right Sidebar: About Organization -->
-      <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 flex flex-col justify-between">
-        <div class="space-y-4">
-          <h2 class="text-xl font-bold text-brand-dark">About The Organization</h2>
-          <div class="flex items-center gap-3">
-            <img id="org-logo-card" src="https://via.placeholder.com/50" class="w-12 h-12 rounded-full border border-gray-200" alt="Org Logo">
-            <span id="org-name-card" class="font-bold text-gray-800">The Lifa Organization</span>
-          </div>
-          <p id="org-description" class="text-xs text-gray-500 leading-relaxed">
-            A non-profit organization dedicated to environmental protection and community development through volunteer initiatives...
-          </p>
-          <div class="space-y-2 text-xs text-gray-600 pt-2">
-            <p class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand-accent"></i> <span id="org-address">Hama, al turkan</span></p>
-            <p class="flex items-center gap-2"><i class="fa-solid fa-globe text-brand-accent"></i> <a id="org-website" href="#" class="hover:underline">www.thelifa.com</a></p>
-          </div>
+      <!-- About The Organization Sidebar -->
+      <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 space-y-5">
+        <h2 class="text-[18px] font-semibold text-brand-dark">About The Organization</h2>
+        
+        <div class="flex items-center gap-3">
+          <img src="https://via.placeholder.com/50" class="w-12 h-12 rounded-full border border-gray-200 object-cover" alt="Org Logo">
+          <span class="font-semibold text-[15px] text-brand-dark">The Lifa Organization</span>
         </div>
 
-        <button class="w-full bg-brand-dark hover:bg-brand-light text-white text-sm font-medium py-3 rounded-xl transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-bars-staggered"></i> View Organization
+        <p class="text-[13px] text-brand-sub leading-relaxed">
+          A non-profit organization dedicated to environmental protection and community development through volunteer initiatives and awareness campaigns.
+        </p>
+
+        <div class="space-y-2.5 text-[13px] text-brand-dark pt-1">
+          <p class="flex items-center gap-2.5">
+            <i class="fa-solid fa-location-dot text-brand-yellow"></i>
+            <span>Hama, al turkan</span>
+          </p>
+          <p class="flex items-center gap-2.5">
+            <i class="fa-solid fa-globe text-brand-yellow"></i>
+            <a href="https://www.thelifa.com" target="_blank" class="underline hover:text-brand-yellow transition-colors">www.thelifa.com</a>
+          </p>
+        </div>
+
+        <button onclick="alert('Navigating to Organization Profile...')" class="w-full bg-brand-dark hover:opacity-95 text-white text-[14px] font-medium py-3 rounded-[14px] transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer">
+          <i class="fa-solid fa-bars-staggered"></i>
+          <span>View Organization</span>
         </button>
       </div>
+
     </div>
 
-    <!-- Bottom Section: Featured Campaigns & Contact Us -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Bottom Section: Featured Campaigns & Contact -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       
-      <!-- Featured Campaigns (2 Cols) -->
-      <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6">
+      <!-- Featured Campaigns Cards -->
+      <div class="lg:col-span-2 bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 space-y-6">
         <div class="flex items-center justify-between">
-          <h2 class="text-xl font-bold text-brand-dark">Featured Campaigns</h2>
-          <a href="#" class="text-xs text-gray-400 hover:text-brand-dark">view all</a>
+          <h2 class="text-[18px] font-semibold text-brand-dark">Featured Campaigns</h2>
+          <a href="#" class="text-[12px] text-brand-sub hover:text-brand-dark transition-colors">view all</a>
         </div>
 
-        <div id="featured-campaigns-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Item Card Placeholder (Repeated via JS or Loop) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          
+          <!-- Card 1 -->
+          <div class="bg-white rounded-[20px] p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center space-y-3">
+            <div class="w-full h-24 rounded-[16px] overflow-hidden border-2 border-brand-dark">
+              <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=300&auto=format&fit=crop" class="w-full h-full object-cover" alt="Campaign">
+            </div>
+            <h3 class="font-medium text-[13px] text-brand-dark line-clamp-1">Blood Donation Campaign</h3>
+            <div class="text-[11px] text-brand-sub space-y-1 w-full text-left pl-1">
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-hands-holding-child text-brand-yellow"></i> Sanad</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-brand-yellow"></i> Aleppo, al zahraa</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-star text-brand-yellow"></i> 5 | 100 Reviews</p>
+            </div>
+            <button onclick="alert('Opening campaign details...')" class="w-full bg-brand-dark text-white text-[12px] font-medium py-2 rounded-[10px] hover:opacity-90 transition cursor-pointer">
+              See details
+            </button>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bg-white rounded-[20px] p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center space-y-3">
+            <div class="w-full h-24 rounded-[16px] overflow-hidden border-2 border-brand-dark">
+              <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=300&auto=format&fit=crop" class="w-full h-full object-cover" alt="Campaign">
+            </div>
+            <h3 class="font-medium text-[13px] text-brand-dark line-clamp-1">Blood Donation Campaign</h3>
+            <div class="text-[11px] text-brand-sub space-y-1 w-full text-left pl-1">
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-hands-holding-child text-brand-yellow"></i> Sanad</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-brand-yellow"></i> Aleppo, al zahraa</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-star text-brand-yellow"></i> 5 | 100 Reviews</p>
+            </div>
+            <button onclick="alert('Opening campaign details...')" class="w-full bg-brand-dark text-white text-[12px] font-medium py-2 rounded-[10px] hover:opacity-90 transition cursor-pointer">
+              See details
+            </button>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bg-white rounded-[20px] p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center space-y-3">
+            <div class="w-full h-24 rounded-[16px] overflow-hidden border-2 border-brand-dark">
+              <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=300&auto=format&fit=crop" class="w-full h-full object-cover" alt="Campaign">
+            </div>
+            <h3 class="font-medium text-[13px] text-brand-dark line-clamp-1">Blood Donation Campaign</h3>
+            <div class="text-[11px] text-brand-sub space-y-1 w-full text-left pl-1">
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-hands-holding-child text-brand-yellow"></i> Sanad</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-brand-yellow"></i> Aleppo, al zahraa</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-star text-brand-yellow"></i> 5 | 100 Reviews</p>
+            </div>
+            <button onclick="alert('Opening campaign details...')" class="w-full bg-brand-dark text-white text-[12px] font-medium py-2 rounded-[10px] hover:opacity-90 transition cursor-pointer">
+              See details
+            </button>
+          </div>
+
         </div>
       </div>
 
-      <!-- Contact Us Card -->
-      <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 flex flex-col justify-between">
-        <div class="space-y-4">
-          <h2 class="text-xl font-bold text-brand-dark">Contact Us</h2>
-          
-          <div class="space-y-4 text-xs text-gray-600">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-brand-dark text-white flex items-center justify-center"><i class="fa-solid fa-phone"></i></div>
-              <div>
-                <p class="font-bold text-gray-800">Call us</p>
-                <p id="contact-phone">+963-906-156-2849</p>
-              </div>
-            </div>
+      <!-- Contact Us -->
+      <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 space-y-6">
+        <h2 class="text-[18px] font-semibold text-brand-dark">Contact Us</h2>
 
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-brand-dark text-white flex items-center justify-center"><i class="fa-solid fa-envelope"></i></div>
-              <div>
-                <p class="font-bold text-gray-800">Mail Us</p>
-                <p id="contact-email">Athar@gmail.com</p>
-              </div>
+        <div class="space-y-4 text-[13px]">
+          <div class="flex items-center gap-3.5">
+            <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-phone text-[13px]"></i>
             </div>
+            <div>
+              <p class="font-semibold text-brand-dark">Call us</p>
+              <p class="text-brand-sub">+963-906-156-2849</p>
+            </div>
+          </div>
 
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-brand-dark text-white flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
-              <div>
-                <p class="font-bold text-gray-800">Visit Us</p>
-                <p id="contact-address">Syria-Aleppo</p>
-              </div>
+          <div class="flex items-center gap-3.5">
+            <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-envelope text-[13px]"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-brand-dark">Mail Us</p>
+              <p class="text-brand-sub">Athar@gmail.com</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3.5">
+            <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-location-dot text-[13px]"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-brand-dark">Visit Us</p>
+              <p class="text-brand-sub">Syria-Aleppo</p>
             </div>
           </div>
         </div>
 
-        <button class="w-full bg-brand-dark hover:bg-brand-light text-white text-sm font-medium py-3 rounded-xl transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-circle-exclamation"></i> Report Issue
+        <button onclick="alert('Opening Issue Report Dialog...')" class="w-full bg-brand-dark hover:opacity-95 text-white text-[13px] font-medium py-3 rounded-[14px] transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>Report Issue</span>
         </button>
       </div>
 
@@ -255,48 +374,35 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-brand-dark text-white text-center py-4 text-xs">
+  <footer class="bg-brand-dark text-white text-center py-4 text-xs font-normal">
     All Rights Reserved.
   </footer>
 
-  <!-- API Integration Logic Placeholder -->
+  <!-- 3️⃣ JavaScript Interactions -->
   <script>
-    const CAMPAIGN_ID = 1; // ID يتم جلبه عادة من الـ URL
-
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchCampaignDetails(CAMPAIGN_ID);
-    });
-
-    // دالة ربط الـ API
-    async function fetchCampaignDetails(id) {
-      try {
-        // قم باستبدال الرابط برابط الـ API الخاص بك في Laravel
-        // const response = await fetch(`/api/campaigns/${id}`);
-        // const data = await response.json();
-        
-        // renderData(data);
-      } catch (error) {
-        console.error("Error loading campaign data:", error);
-      }
-    }
-
-    // دالة تبديل التبويبات (Tabs)
-    function switchTab(tab) {
+    // دالة التبديل بين التبويبات الثلاثة (About / Requirements / Location)
+    function switchTab(tabName) {
       const tabs = ['about', 'requirements', 'location'];
+      
       tabs.forEach(t => {
-        document.getElementById(`tab-content-${t}`).classList.add('hidden');
-        document.getElementById(`tab-${t === 'about' ? 'about' : t === 'requirements' ? 'req' : 'loc'}-btn`).className = "pb-2 text-gray-400 hover:text-brand-dark";
+        const content = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`btn-${t}`);
+        
+        if (t === tabName) {
+          content.classList.remove('hidden');
+          btn.className = "pb-3 text-brand-dark font-semibold border-b-2 border-brand-dark transition-colors cursor-pointer";
+        } else {
+          content.classList.add('hidden');
+          btn.className = "pb-3 text-brand-sub hover:text-brand-dark transition-colors cursor-pointer";
+        }
       });
-
-      document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
-      const activeBtnId = tab === 'about' ? 'tab-about-btn' : tab === 'requirements' ? 'tab-req-btn' : 'tab-loc-btn';
-      document.getElementById(activeBtnId).className = "pb-2 border-b-2 border-brand-dark text-brand-dark font-semibold";
     }
 
-    function handleJoinCampaign() {
-      // إرسال طلب الانضمام للباك إند
-      alert('الانضمام للحملة...');
+    // دالة زر الانضمام للحملة
+    function handleJoin() {
+      alert('🎉 Thanks for your interest! Joining functionality will be connected to Laravel API soon.');
     }
   </script>
+
 </body>
 </html>
