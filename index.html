@@ -23,8 +23,8 @@
           colors: {
             brand: {
               dark: '#0A3A45',      // اللون الكحلي/الزيتي الأساسي
-              yellow: '#FFC107',    // اللون الأصفر المعتمد
-              bg: '#F7F9FA',        // خلفية الصفحة
+              yellow: '#FCC21B',    // اللون الأصفر المعتمد بدقة
+              bg: '#F8FAFC',        // خلفية الصفحة
               sub: '#5C6B73',       // لون النصوص الفرعية
               red: '#EE1D52'        // لون الأخطاء أو التنبيهات
             }
@@ -37,6 +37,16 @@
       }
     }
   </script>
+
+  <style>
+    /* كروت ناعمة وظلال خفيفة مطابقة للتصميم الأصلي بدون أي بروز مزعج */
+    .custom-card {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+  </style>
 </head>
 <body class="bg-brand-bg font-poppins text-brand-dark min-h-screen flex flex-col justify-between antialiased">
 
@@ -88,23 +98,23 @@
 
     <!-- Back Button -->
     <div>
-      <button onclick="window.history.back()" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-brand-dark hover:bg-brand-yellow hover:text-white transition-all cursor-pointer">
+      <button onclick="window.history.back()" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-brand-dark hover:bg-brand-yellow hover:text-white transition-all cursor-pointer border border-gray-100">
         <i class="fa-solid fa-arrow-left"></i>
       </button>
     </div>
 
     <!-- Top Card: Campaign Overview & Image -->
-    <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-8 items-stretch">
+    <div class="custom-card p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-stretch">
       
       <!-- Left Column: Info & Details -->
       <div class="flex-1 flex flex-col justify-between space-y-5">
         
         <!-- Title & On-Ground Badge -->
         <div class="flex items-center justify-between flex-wrap gap-3">
-          <h1 id="camp-title" class="text-2xl md:text-3xl font-semibold text-brand-dark">Loading...</h1>
+          <h1 id="camp-title" class="text-2xl md:text-3xl font-bold text-brand-dark">Loading...</h1>
           
           <!-- 🏷️ شارة نوع الحملة -->
-          <div id="camp-type-badge" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-yellow text-brand-dark text-[12px] font-bold shadow-sm uppercase tracking-wider">
+          <div id="camp-type-badge" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-brand-yellow text-brand-dark text-[12px] font-bold shadow-sm uppercase tracking-wider">
             <i id="camp-type-icon" class="fa-solid fa-location-dot text-[13px]"></i>
             <span id="camp-type-text">On-Ground</span>
           </div>
@@ -116,16 +126,16 @@
           <span id="org-small-name" class="font-medium text-[15px] text-brand-sub">Loading...</span>
         </div>
 
-        <!-- Yellow Divider -->
-        <div class="border-t-2 border-brand-yellow opacity-80"></div>
+        <!-- Yellow Divider 1 -->
+        <div class="h-[1.5px] bg-brand-yellow w-full my-1"></div>
 
         <!-- Info Grid 1 (Date, Location, Time) -->
-        <div class="grid grid-cols-3 text-center">
+        <div class="grid grid-cols-3 text-center items-center py-1">
           <div class="px-2">
             <p class="text-[12px] text-brand-sub font-normal mb-1">Date</p>
             <p id="camp-date" class="font-semibold text-[14px] text-brand-dark">--/--/----</p>
           </div>
-          <div class="px-2 border-x-2 border-brand-yellow">
+          <div class="px-2 border-x border-brand-yellow">
             <p class="text-[12px] text-brand-sub font-normal mb-1">Location</p>
             <p id="camp-location" class="font-semibold text-[14px] text-brand-dark truncate">---</p>
           </div>
@@ -135,16 +145,16 @@
           </div>
         </div>
 
-        <!-- Yellow Divider -->
-        <div class="border-t-2 border-brand-yellow opacity-80"></div>
+        <!-- Yellow Divider 2 -->
+        <div class="h-[1.5px] bg-brand-yellow w-full my-1"></div>
 
         <!-- Info Grid 2 (Volunteer Statistics) -->
-        <div class="grid grid-cols-3 text-center">
+        <div class="grid grid-cols-3 text-center items-center py-1">
           <div>
             <p class="text-[12px] text-brand-sub font-normal mb-1">Volunteer Needed</p>
             <p id="vol-needed" class="font-semibold text-[15px] text-brand-dark">0</p>
           </div>
-          <div class="border-x-2 border-brand-yellow px-2">
+          <div class="border-x border-brand-yellow px-2">
             <p class="text-[12px] text-brand-sub font-normal mb-1">Registered</p>
             <p id="vol-registered" class="font-semibold text-[15px] text-brand-dark">0</p>
           </div>
@@ -182,7 +192,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       
       <!-- Main Content Tabs Area -->
-      <div class="lg:col-span-2 bg-white rounded-[24px] p-8 shadow-sm border border-gray-100 flex flex-col justify-between min-h-[360px]">
+      <div class="lg:col-span-2 custom-card p-6 md:p-8 flex flex-col justify-between min-h-[360px]">
         <div>
           <!-- Tab Navigation Buttons -->
           <div class="flex border-b border-gray-200 gap-10 mb-6 text-[15px] font-medium">
@@ -234,7 +244,7 @@
       </div>
 
       <!-- About The Organization Sidebar -->
-      <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 space-y-5">
+      <div class="custom-card p-6 md:p-8 space-y-5">
         <h2 class="text-[18px] font-semibold text-brand-dark">About The Organization</h2>
         
         <div class="flex items-center gap-3">
@@ -269,7 +279,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       
       <!-- Featured Campaigns Cards -->
-      <div class="lg:col-span-2 bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 space-y-6">
+      <div class="lg:col-span-2 custom-card p-6 md:p-8 space-y-6">
         <div class="flex items-center justify-between">
           <h2 class="text-[18px] font-semibold text-brand-dark">Featured Campaigns</h2>
           <a href="#" class="text-[12px] text-brand-sub hover:text-brand-dark transition-colors">view all</a>
@@ -281,7 +291,7 @@
       </div>
 
       <!-- Contact Us -->
-      <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 space-y-6">
+      <div class="custom-card p-6 md:p-8 space-y-6">
         <h2 class="text-[18px] font-semibold text-brand-dark">Contact Us</h2>
 
         <div class="space-y-4 text-[13px]">
