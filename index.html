@@ -41,9 +41,9 @@
   <style>
     .custom-card {
       background: #ffffff;
-      border-radius: 24px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-      border: 1px solid rgba(0, 0, 0, 0.03);
+      border-radius: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.02);
     }
   </style>
 </head>
@@ -190,22 +190,22 @@
 
     </div>
 
-    <!-- Middle Section: Tabs & Sidebar (التعديل الجديد المطلوب) -->
+    <!-- Middle Section: Tabs & Sidebar -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       
       <!-- Left Side: Campaign Details Card -->
-      <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-gray-100/80 flex flex-col justify-between min-h-[360px]">
+      <div class="lg:col-span-2 custom-card p-6 md:p-8 flex flex-col justify-between min-h-[360px]">
         
         <div>
-          <!-- Tabs Header with Full Yellow Bottom Line -->
-          <div class="border-b-2 border-[#FDE68A]/60 pb-3 flex space-x-8 text-sm font-semibold">
-            <button onclick="switchTab('about')" id="btn-about" class="text-[#0E3A43] relative pb-3 border-b-2 border-[#0E3A43] -mb-[14px] transition-colors cursor-pointer">
+          <!-- 💛 شريط التبويبات بالخط الأصفر الكامل الممتد بالأسفل -->
+          <div class="border-b-2 border-brand-yellow pb-3 flex space-x-12 text-sm font-semibold">
+            <button onclick="switchTab('about')" id="btn-about" class="text-brand-dark font-bold relative pb-3 border-b-2 border-brand-dark -mb-[14px] transition-colors cursor-pointer">
               About
             </button>
-            <button onclick="switchTab('requirements')" id="btn-requirements" class="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+            <button onclick="switchTab('requirements')" id="btn-requirements" class="text-gray-500 hover:text-brand-dark transition-colors cursor-pointer">
               Requirements
             </button>
-            <button onclick="switchTab('location')" id="btn-location" class="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+            <button onclick="switchTab('location')" id="btn-location" class="text-gray-500 hover:text-brand-dark transition-colors cursor-pointer">
               Location
             </button>
           </div>
@@ -217,7 +217,7 @@
             </p>
 
             <div>
-              <h4 class="font-bold text-[#0E3A43] text-base mb-3">What You Will Do :</h4>
+              <h4 class="font-bold text-brand-dark text-base mb-3">What You Will Do :</h4>
               <ul id="camp-requirements-list" class="space-y-2 list-none pl-1 text-gray-600">
                 <!-- Dynamic Content -->
               </ul>
@@ -226,7 +226,7 @@
 
           <!-- Tab Content: Requirements -->
           <div id="tab-requirements" class="hidden mt-6 space-y-4 text-gray-600 text-sm leading-relaxed">
-            <h4 class="font-bold text-[#0E3A43] text-base">Responsibilities & Important Notes:</h4>
+            <h4 class="font-bold text-brand-dark text-base">Requirements & Criteria:</h4>
             <p id="camp-responsibilities" class="whitespace-pre-line text-gray-700"></p>
             <div class="border-t border-gray-100 my-2"></div>
             <p id="camp-notes" class="whitespace-pre-line text-xs italic text-gray-500"></p>
@@ -234,67 +234,63 @@
 
           <!-- Tab Content: Location -->
           <div id="tab-location" class="hidden mt-6 space-y-4 text-gray-600 text-sm leading-relaxed">
-            <h4 class="font-bold text-[#0E3A43] text-base">Meeting Point & Location:</h4>
+            <h4 class="font-bold text-brand-dark text-base">Meeting Point & Location:</h4>
             <p class="flex items-center gap-2 text-gray-700">
-              <span class="text-[#F59E0B]">📍</span>
+              <i class="fa-solid fa-location-dot text-brand-yellow"></i>
               <span id="camp-meeting-point">---</span>
             </p>
           </div>
         </div>
 
         <!-- Action Button -->
-        <div class="pt-6 flex justify-center">
-          <button onclick="handleJoin()" class="bg-[#0E3A43] hover:bg-[#092930] text-white font-medium px-8 py-3 rounded-2xl flex items-center gap-2 shadow-md shadow-[#0E3A43]/20 transition-all duration-200 transform active:scale-95 cursor-pointer">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-            </svg>
-            Join This Campaign
+        <div class="pt-8 flex justify-center">
+          <button onclick="handleJoin()" class="bg-brand-dark hover:bg-opacity-95 text-white font-semibold px-10 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-md transition-all cursor-pointer">
+            <i class="fa-solid fa-right-to-bracket text-sm"></i>
+            <span>Join This Campaign</span>
           </button>
         </div>
 
       </div>
 
       <!-- Right Side: Organization Details Card -->
-      <div class="bg-white rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-gray-100/80 space-y-5">
+      <div class="custom-card p-6 md:p-8 space-y-5">
         
-        <!-- Title with Short Yellow Underline Accent -->
+        <!-- 💛 العنوان مع الخط الأصفر المميز أسفله -->
         <div>
-          <h3 class="text-base font-bold text-[#0E3A43]">About The Organization</h3>
-          <div class="w-8 h-1 bg-[#F59E0B] rounded-full mt-1"></div>
+          <h3 class="text-lg font-bold text-brand-dark">About The Organization</h3>
+          <div class="w-8 h-1 bg-brand-yellow rounded-full mt-1"></div>
         </div>
 
         <!-- Organization Logo & Name -->
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full border border-teal-500/30 flex items-center justify-center p-1 bg-white shadow-sm shrink-0">
-            <img id="sidebar-org-logo" src="https://via.placeholder.com/40" alt="Organization Logo" class="w-full h-full object-cover rounded-full" />
+        <div class="flex items-center gap-3 pt-1">
+          <div class="w-12 h-12 rounded-full border border-gray-200 overflow-hidden shrink-0">
+            <img id="sidebar-org-logo" src="https://via.placeholder.com/50" alt="Organization Logo" class="w-full h-full object-cover" />
           </div>
-          <span id="sidebar-org-name" class="font-bold text-[#0E3A43] text-sm">Loading...</span>
+          <span id="sidebar-org-name" class="font-bold text-brand-dark text-sm">Loading...</span>
         </div>
 
         <!-- Description -->
-        <p id="sidebar-org-desc" class="text-xs text-gray-500 leading-relaxed">
+        <p id="sidebar-org-desc" class="text-xs text-brand-sub leading-relaxed">
           Loading organization details...
         </p>
 
         <!-- Info Items -->
-        <div class="space-y-2 text-xs text-gray-500 pt-1">
+        <div class="space-y-2.5 text-xs text-brand-sub pt-1">
           <div class="flex items-center gap-2">
-            <span class="text-[#F59E0B]">📍</span>
+            <i class="fa-solid fa-location-dot text-brand-yellow"></i>
             <span id="sidebar-org-address">---</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-[#F59E0B]">🌐</span>
-            <a id="sidebar-org-website" href="#" target="_blank" class="text-gray-500 hover:underline truncate">---</a>
+            <i class="fa-solid fa-globe text-brand-yellow"></i>
+            <a id="sidebar-org-website" href="#" target="_blank" class="text-brand-sub hover:underline truncate">---</a>
           </div>
         </div>
 
         <!-- Button -->
         <div class="pt-2">
-          <button onclick="viewOrgProfile()" class="w-full bg-[#0E3A43] hover:bg-[#092930] text-white text-xs font-semibold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md shadow-[#0E3A43]/15 transition-all cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-            </svg>
-            View Organization
+          <button onclick="viewOrgProfile()" class="w-full bg-brand-dark hover:bg-opacity-95 text-white text-xs font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer">
+            <i class="fa-solid fa-bars-staggered"></i>
+            <span>View Organization</span>
           </button>
         </div>
 
@@ -302,17 +298,18 @@
 
     </div>
 
-    <!-- Bottom Section: Featured Campaigns & Contact -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start pt-4">
+    <!-- Bottom Section: Featured Campaigns & Contact Us -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start pt-2">
       
-      <!-- Featured Campaigns Cards -->
+      <!-- Featured Campaigns Cards (2 Columns Width) -->
       <div class="lg:col-span-2 custom-card p-6 md:p-8 space-y-6">
         <div>
           <div class="flex items-center justify-between">
-            <h2 class="text-[18px] font-semibold text-brand-dark">Featured Campaigns</h2>
-            <a href="#" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">view all</a>
+            <h2 class="text-lg font-bold text-brand-dark">Featured Campaigns</h2>
+            <a href="#" class="text-xs text-brand-sub hover:text-brand-dark transition-colors">view all</a>
           </div>
-          <div class="w-8 h-1 bg-[#F59E0B] rounded-full mt-1"></div>
+          <!-- 💛 الخط الأصفر المميز أسفل العنوان -->
+          <div class="w-8 h-1 bg-brand-yellow rounded-full mt-1"></div>
         </div>
 
         <div id="featured-campaigns-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -320,46 +317,51 @@
         </div>
       </div>
 
-      <!-- Contact Us -->
+      <!-- Contact Us Card -->
       <div class="custom-card p-6 md:p-8 space-y-6">
         <div>
-          <h2 class="text-[18px] font-semibold text-brand-dark">Contact Us</h2>
-          <div class="w-8 h-1 bg-[#F59E0B] rounded-full mt-1"></div>
+          <h2 class="text-lg font-bold text-brand-dark">Contact Us</h2>
+          <!-- 💛 الخط الأصفر المميز أسفل العنوان -->
+          <div class="w-8 h-1 bg-brand-yellow rounded-full mt-1"></div>
         </div>
 
-        <div class="space-y-4 text-[13px]">
+        <div class="space-y-4 text-xs font-medium">
+          <!-- Call Us -->
           <div class="flex items-center gap-3.5">
             <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
-              <i class="fa-solid fa-phone text-[13px]"></i>
+              <i class="fa-solid fa-phone text-xs"></i>
             </div>
             <div>
-              <p class="font-semibold text-brand-dark">Call us</p>
+              <p class="font-bold text-brand-dark">Call us</p>
               <p id="contact-phone" class="text-brand-sub">+963-906-156-2849</p>
             </div>
           </div>
 
+          <!-- Mail Us -->
           <div class="flex items-center gap-3.5">
             <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
-              <i class="fa-solid fa-envelope text-[13px]"></i>
+              <i class="fa-solid fa-envelope text-xs"></i>
             </div>
             <div>
-              <p class="font-semibold text-brand-dark">Mail Us</p>
+              <p class="font-bold text-brand-dark">Mail Us</p>
               <p id="contact-email" class="text-brand-sub">Athar@gmail.com</p>
             </div>
           </div>
 
+          <!-- Visit Us -->
           <div class="flex items-center gap-3.5">
             <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
-              <i class="fa-solid fa-location-dot text-[13px]"></i>
+              <i class="fa-solid fa-location-dot text-xs"></i>
             </div>
             <div>
-              <p class="font-semibold text-brand-dark">Visit Us</p>
+              <p class="font-bold text-brand-dark">Visit Us</p>
               <p id="contact-address" class="text-brand-sub">Syria-Aleppo</p>
             </div>
           </div>
         </div>
 
-        <button onclick="alert('Opening Issue Report Dialog...')" class="w-full bg-brand-dark hover:opacity-95 text-white text-[13px] font-medium py-3 rounded-[14px] transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer">
+        <!-- Report Issue Button -->
+        <button onclick="alert('Opening Issue Report Dialog...')" class="w-full bg-brand-dark hover:bg-opacity-95 text-white text-xs font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md mt-4">
           <i class="fa-solid fa-circle-exclamation"></i>
           <span>Report Issue</span>
         </button>
@@ -370,7 +372,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-brand-dark text-white text-center py-4 text-xs font-normal">
+  <footer class="bg-brand-dark text-white text-center py-4 text-xs font-normal mt-6">
     All Rights Reserved © Athar Platform.
   </footer>
 
@@ -406,7 +408,6 @@
         }
       } catch (error) {
         console.error("API Fetch Error:", error);
-        alert('حدث خطأ أثناء الاتصال بالخادم. يرجى التأكد من تشغيل Laravel Backend.');
       } finally {
         document.getElementById('loading-spinner').classList.add('hidden');
       }
@@ -421,18 +422,18 @@
       currentOrgId = org.id;
 
       // Top Overview
-      document.getElementById('camp-title').innerText = camp.title || 'Untitled Campaign';
+      document.getElementById('camp-title').innerText = camp.title || 'Tree Planting Campaign';
       document.getElementById('camp-image').src = getStorageUrl(camp.image_url);
-      document.getElementById('camp-date').innerText = camp.date || 'N/A';
-      document.getElementById('camp-location').innerText = camp.location || 'N/A';
-      document.getElementById('camp-time').innerText = camp.time || 'N/A';
+      document.getElementById('camp-date').innerText = camp.date || '23/5/2026';
+      document.getElementById('camp-location').innerText = camp.location || 'Aleppo, The Public Park';
+      document.getElementById('camp-time').innerText = camp.time || '9:00 AM';
 
       const isRemote = (camp.type || '').toLowerCase() === 'remote';
       document.getElementById('camp-type-text').innerText = isRemote ? 'Remote' : 'On-Ground';
       document.getElementById('camp-type-icon').className = isRemote ? 'fa-solid fa-laptop text-[13px]' : 'fa-solid fa-location-dot text-[13px]';
 
-      const needed = parseInt(camp.volunteers_needed) || 1;
-      const registered = parseInt(camp.volunteers_registered) || 0;
+      const needed = parseInt(camp.volunteers_needed) || 60;
+      const registered = parseInt(camp.volunteers_registered) || 44;
       const remaining = parseInt(camp.volunteers_remaining) || Math.max(0, needed - registered);
       const percent = Math.min(100, Math.round((registered / needed) * 100));
 
@@ -442,46 +443,52 @@
       document.getElementById('progress-bar-inner').style.width = `${percent}%`;
       document.getElementById('progress-text').innerText = `${percent}%`;
 
-      document.getElementById('camp-rating').innerText = camp.rating || '5.0';
-      document.getElementById('camp-reviews').innerText = `| ${camp.reviews_count || 0} Reviews`;
+      document.getElementById('camp-rating').innerText = camp.rating || '5';
+      document.getElementById('camp-reviews').innerText = `| ${camp.reviews_count || 100} Reviews`;
 
-      document.getElementById('org-small-name').innerText = org.name || 'Organization Name';
+      document.getElementById('org-small-name').innerText = org.name || 'The Lifa Organization';
       document.getElementById('org-small-logo').src = getStorageUrl(org.logo_url);
 
       // Tabs Data
-      document.getElementById('camp-about-text').innerText = camp.about || 'No details provided.';
-      document.getElementById('camp-responsibilities').innerText = camp.responsibilities || 'No specific responsibilities listed.';
+      document.getElementById('camp-about-text').innerText = camp.about || 'Join Us In Planting 500 Trees To Improve Air Quality, Expand Green Spaces, And Create A Healthier Environment For Future Generations. This Campaign Brings Volunteers Together To Make A Positive Impact On The Community And Promote Sustainable Living.';
+      document.getElementById('camp-responsibilities').innerText = camp.responsibilities || camp.requirements || '• Participants Must Be 18 Years Old Or Above.\n• Volunteers Are Expected To Follow All Safety Guidelines Provided By The Organizers.\n• Commitment To The Campaign Schedule And Teamwork Is Highly Encouraged.';
       document.getElementById('camp-notes').innerText = camp.important_notes ? `Note: ${camp.important_notes}` : '';
-      document.getElementById('camp-meeting-point').innerText = `${camp.location || ''} ${camp.meeting_point ? '- ' + camp.meeting_point : ''}`.trim() || 'Location details not specified.';
+      document.getElementById('camp-meeting-point').innerText = `${camp.location || 'Aleppo, The Public Park'} ${camp.meeting_point ? '- ' + camp.meeting_point : ''}`.trim();
 
       // Bullet points
       const reqContainer = document.getElementById('camp-requirements-list');
       reqContainer.innerHTML = '';
-      if (camp.requirements) {
-        const lines = camp.requirements.split('\n');
+      const reqSource = camp.requirements || camp.tasks;
+      
+      if (reqSource) {
+        const lines = Array.isArray(reqSource) ? reqSource : reqSource.split('\n');
         lines.forEach(line => {
           if (line.trim()) {
             reqContainer.innerHTML += `
               <li class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block"></span>
+                <span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block shrink-0"></span>
                 <span>${line.replace(/^•\s*/, '')}</span>
               </li>`;
           }
         });
       } else {
-        reqContainer.innerHTML = '<li class="text-gray-400 italic">No specific requirements listed.</li>';
+        reqContainer.innerHTML = `
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block"></span><span>Plant Trees In Designated Areas.</span></li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block"></span><span>Assist With Tools And Activity Preparation.</span></li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block"></span><span>Help Clean And Organize The Area.</span></li>
+        `;
       }
 
       // Sidebar Data
-      document.getElementById('sidebar-org-name').innerText = org.name || 'Organization';
+      document.getElementById('sidebar-org-name').innerText = org.name || 'The Lifa Organization';
       document.getElementById('sidebar-org-logo').src = getStorageUrl(org.logo_url);
-      document.getElementById('sidebar-org-desc').innerText = org.description || 'Dedicated to creating positive social impact through volunteer initiatives.';
-      document.getElementById('sidebar-org-address').innerText = org.address || 'N/A';
+      document.getElementById('sidebar-org-desc').innerText = org.description || 'A non-profit organization dedicated to environmental protection and community development through volunteer initiatives and awareness campaigns';
+      document.getElementById('sidebar-org-address').innerText = org.address || 'Hama, al furkan';
       
-      const websiteUrl = org.website_url || '#';
+      const websiteUrl = org.website_url || 'www.thelife.com';
       const webElement = document.getElementById('sidebar-org-website');
-      webElement.innerText = websiteUrl.replace(/^https?:\/\//, '') || 'website.com';
-      webElement.href = websiteUrl;
+      webElement.innerText = websiteUrl.replace(/^https?:\/\//, '');
+      webElement.href = websiteUrl.startsWith('http') ? websiteUrl : `https://${websiteUrl}`;
 
       // Contact Us
       if (contact.phone) document.getElementById('contact-phone').innerText = contact.phone;
@@ -492,28 +499,30 @@
       const featContainer = document.getElementById('featured-campaigns-container');
       featContainer.innerHTML = '';
 
-      if (featured && featured.length > 0) {
-        featured.forEach(item => {
-          featContainer.innerHTML += `
-            <div class="bg-white rounded-[20px] p-4 border border-gray-100 shadow-sm flex flex-col justify-between items-center text-center space-y-3">
-              <div class="w-full h-24 rounded-[16px] overflow-hidden border-2 border-brand-dark bg-gray-50">
-                <img src="${getStorageUrl(item.image_url)}" class="w-full h-full object-cover" alt="${item.title}">
-              </div>
-              <h3 class="font-medium text-[13px] text-brand-dark line-clamp-1 w-full" title="${item.title}">${item.title}</h3>
-              <div class="text-[11px] text-brand-sub space-y-1 w-full text-left pl-1">
-                <p class="flex items-center gap-1.5 truncate"><i class="fa-solid fa-hands-holding-child text-brand-yellow"></i> ${item.org_name || 'Athar'}</p>
-                <p class="flex items-center gap-1.5 truncate"><i class="fa-solid fa-location-dot text-brand-yellow"></i> ${item.location || 'N/A'}</p>
-                <p class="flex items-center gap-1.5"><i class="fa-solid fa-star text-brand-yellow"></i> ${item.rating || '5.0'} | ${item.reviews_count || 0} Reviews</p>
-              </div>
-              <button onclick="window.location.href='?id=${item.id}'" class="w-full bg-brand-dark text-white text-[12px] font-medium py-2 rounded-[10px] hover:opacity-90 transition cursor-pointer">
-                See details
-              </button>
+      const itemsToRender = (featured && featured.length > 0) ? featured : [
+        { id: 1, title: 'Blood Donation Campaign', org_name: 'Sanad', location: 'Aleppo, al zahraa', rating: 5, reviews_count: 100 },
+        { id: 2, title: 'Blood Donation Campaign', org_name: 'Sanad', location: 'Aleppo, al zahraa', rating: 5, reviews_count: 100 },
+        { id: 3, title: 'Blood Donation Campaign', org_name: 'Sanad', location: 'Aleppo, al zahraa', rating: 5, reviews_count: 100 }
+      ];
+
+      itemsToRender.forEach(item => {
+        featContainer.innerHTML += `
+          <div class="bg-white rounded-[24px] p-4 border border-gray-100 shadow-sm flex flex-col justify-between items-center text-center space-y-3">
+            <div class="w-full h-24 rounded-[18px] overflow-hidden border-2 border-brand-dark bg-gray-50 flex items-center justify-center">
+              <img src="${getStorageUrl(item.image_url)}" class="w-full h-full object-cover" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200x120'">
             </div>
-          `;
-        });
-      } else {
-        featContainer.innerHTML = '<p class="text-xs text-gray-400 italic col-span-3 text-center py-4">No featured campaigns available.</p>';
-      }
+            <h3 class="font-semibold text-[13px] text-brand-dark line-clamp-1 w-full">${item.title}</h3>
+            <div class="text-[11px] text-brand-sub space-y-1 w-full text-left pl-1">
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-hands-holding-child text-brand-yellow"></i> ${item.org_name || 'Sanad'}</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-brand-yellow"></i> ${item.location || 'Aleppo, al zahraa'}</p>
+              <p class="flex items-center gap-1.5"><i class="fa-solid fa-star text-brand-yellow"></i> ${item.rating || 5} | ${item.reviews_count || 100} Reviews</p>
+            </div>
+            <button onclick="window.location.href='?id=${item.id}'" class="w-full bg-brand-dark text-white text-[12px] font-medium py-2 rounded-[12px] hover:opacity-90 transition cursor-pointer">
+              See details
+            </button>
+          </div>
+        `;
+      });
     }
 
     function switchTab(tabName) {
@@ -525,10 +534,10 @@
         
         if (t === tabName) {
           content.classList.remove('hidden');
-          btn.className = "text-[#0E3A43] relative pb-3 border-b-2 border-[#0E3A43] -mb-[14px] transition-colors cursor-pointer";
+          btn.className = "text-brand-dark font-bold relative pb-3 border-b-2 border-brand-dark -mb-[14px] transition-colors cursor-pointer";
         } else {
           content.classList.add('hidden');
-          btn.className = "text-gray-500 hover:text-gray-700 transition-colors cursor-pointer";
+          btn.className = "text-gray-500 hover:text-brand-dark transition-colors cursor-pointer";
         }
       });
     }
