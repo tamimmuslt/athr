@@ -37,9 +37,10 @@
 </head>
 <body class="bg-gray-100 font-poppins min-h-screen flex items-center justify-center p-4">
 
-  <!-- 🟢 زر تجريبي لفتح النافذة -->
-  <button onclick="openJoinModal()" class="bg-brand-dark text-white px-8 py-3 rounded-2xl font-semibold shadow-md hover:bg-opacity-90">
-    Open Join Modal
+  <!-- 🟢 زر الانضمام المربوط بفتح النافذة -->
+  <button onclick="openJoinModal()" class="bg-brand-dark hover:bg-opacity-95 text-white font-semibold px-10 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-md transition-all cursor-pointer">
+    <i class="fa-solid fa-right-to-bracket text-sm"></i>
+    <span>Join This Campaign</span>
   </button>
 
   <!-- 🎯 Modal Container Background Overlay -->
@@ -197,7 +198,7 @@
   </div>
 
 
-  <!-- 🟢 JavaScript Logic -->
+  <!-- 🟢 JavaScript Logic Integration -->
   <script>
     const BASE_URL = 'http://127.0.0.1:8000';
     let loadedQuestions = [];
@@ -234,7 +235,7 @@
       document.getElementById('step-2-content').classList.remove('hidden');
       updateStepperUI(2);
 
-      // Fetch campaign questions from backend if empty
+      // Fetch campaign quiz questions from backend
       if (loadedQuestions.length === 0) {
         await loadCampaignQuestions();
       }
@@ -256,7 +257,6 @@
       const circle1 = document.getElementById('step-1-circle');
       const circle2 = document.getElementById('step-2-circle');
       const circle3 = document.getElementById('step-3-circle');
-      
       const line = document.getElementById('step-line-progress');
 
       if (step === 1) {
@@ -277,30 +277,37 @@
       }
     }
 
-    // Render Questions dynamically
+    // Render Questions dynamically from Laravel Quiz API
     async function loadCampaignQuestions() {
       const container = document.getElementById('questions-container');
-      container.innerHTML = '<p class="text-xs text-center text-gray-400">Loading questions...</p>';
+      container.innerHTML = '<p class="text-xs text-center text-gray-400">جاري تحميل أسئلة الاختبار...</p>';
 
       const urlParams = new URLSearchParams(window.location.search);
       const campaignId = urlParams.get('id') || 2;
+      const token = getToken();
 
       try {
-        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}`);
-        const result = await response.json();
+        // 👈 استخدام مسار الـ Quiz المطابق لملف routes/api.php عندك
+        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/quiz`, {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
-        const questions = result.data?.questions || result.data?.campaign_details?.questions || [];
+        const result = await response.json();
+        const questions = result.data || result.questions || [];
         loadedQuestions = questions;
 
         if (questions.length === 0) {
-          container.innerHTML = '<p class="text-xs text-center text-gray-400">No test questions required for this campaign.</p>';
+          container.innerHTML = '<p class="text-xs text-center text-gray-400">لا توجد أسئلة اختبار مسجلة لهذه الحملة.</p>';
           return;
         }
 
         container.innerHTML = '';
         questions.forEach((q, index) => {
           container.innerHTML += `
-            <div class="bg-gray-800/50 p-4 rounded-2xl border border-white/5 space-y-3">
+            <div class="bg-gray-800/50 p-4 rounded-2xl border border-white/5 space-y-3 text-right" dir="auto">
               <p class="text-xs font-semibold text-white">${index + 1}. ${q.question_text}</p>
               <div class="space-y-2 text-xs text-gray-300">
                 ${['a', 'b', 'c', 'd'].map(opt => q[`option_${opt}`] ? `
@@ -315,7 +322,7 @@
         });
       } catch (e) {
         console.error(e);
-        container.innerHTML = '<p class="text-xs text-center text-red-400">Failed to load test questions.</p>';
+        container.innerHTML = '<p class="text-xs text-center text-red-400">تعذر جلب أسئلة الاختبار.</p>';
       }
     }
 
@@ -323,11 +330,11 @@
       userAnswers[qId] = val;
     }
 
-    // Submit API Integration
+    // Submit API Integration (submit-quiz)
     async function submitTestAndJoin() {
       const token = getToken();
       if (!token) {
-        alert('Please login first!');
+        alert('يرجى تسجيل الدخول أولاً لتتمكن من تقديم الاختبار!');
         return;
       }
 
@@ -335,7 +342,8 @@
       const campaignId = urlParams.get('id') || 2;
 
       try {
-        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/join`, {
+        // 👈 استخدام مسار submit-quiz المطابق لملف routes/api.php عندك
+        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/submit-quiz`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -346,14 +354,14 @@
         });
 
         if (response.ok) {
-          goToStep3();
+          goToStep3(); // الانتقال لصفحة النتيجة والنجاح
         } else {
           const res = await response.json();
-          alert(res.message || 'Submission failed');
+          alert(res.message || 'فشل تقديم طلب الاختبار، يرجى التحقق من الإجابات.');
         }
       } catch (e) {
         console.error(e);
-        alert('Server Connection Error!');
+        alert('تعذر الاتصال بالسيرفر، يرجى المحاولة لاحقاً!');
       }
     }
   </script>
