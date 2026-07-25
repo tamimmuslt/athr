@@ -1,369 +1,902 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Athar - Join Campaign Flow</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+import React, { useState, useEffect } from 'react';
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              dark: '#0A3A45',      // اللون الكحلي/الزيتي الأساسي
-              yellow: '#FCC21B',    // اللون الأصفر الأساسي
-              sub: '#8E9A9F',       // النصوص الفرعية على الخلفية الداكنة
-            }
-          },
-          fontFamily: {
-            poppins: ['Poppins', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
-</head>
-<body class="bg-gray-100 font-poppins min-h-screen flex items-center justify-center p-4">
+const BASE_URL = 'http://127.0.0.1:8000';
 
-  <!-- 🟢 زر الانضمام المربوط بفتح النافذة -->
-  <button onclick="openJoinModal()" class="bg-brand-dark hover:bg-opacity-95 text-white font-semibold px-10 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-md transition-all cursor-pointer">
-    <i class="fa-solid fa-right-to-bracket text-sm"></i>
-    <span>Join This Campaign</span>
-  </button>
+export default function CampaignDetails() {
+  // 🔑 1. حالات تفاصيل الحملة والصفحة الرئيسية
+  const [campaignData, setCampaignData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('about');
 
-  <!-- 🎯 Modal Container Background Overlay -->
-  <div id="join-modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    
-    <!-- Modal Card Wrapper -->
-    <div class="bg-brand-dark text-white w-full max-w-xl rounded-[32px] p-6 md:p-8 relative shadow-2xl border border-white/10 max-h-[90vh] overflow-y-auto">
-      
-      <!-- Close Button (X) -->
-      <button onclick="closeJoinModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors cursor-pointer text-xl">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+  // 🎯 2. حالات النافذة المنبثقة والاختبار (Modal & Quiz)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1); // 1: Intro, 2: Quiz, 3: Result, 4: Submitted
+  const [agreementChecked, setAgreementChecked] = useState(false);
 
-      <!-- 1️⃣ Steps Stepper Header -->
-      <div class="flex items-center justify-between max-w-xs mx-auto mb-8 relative pt-2">
-        <!-- Connecting Line Background -->
-        <div class="absolute top-1/2 left-0 right-0 h-[2px] bg-gray-600/60 -translate-y-3 z-0"></div>
-        <div id="step-line-progress" class="absolute top-1/2 left-0 h-[2px] bg-brand-yellow -translate-y-3 z-0 transition-all duration-300" style="width: 0%;"></div>
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [userAnswers, setUserAnswers] = useState({});
+  const [quizTimer, setQuizTimer] = useState(600); // 10 دقائق بالثواني
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-        <!-- Step 1 Circle -->
-        <div class="flex flex-col items-center gap-2 z-10">
-          <div id="step-1-circle" class="w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md transition-all">
-            1
-          </div>
-          <span id="step-1-text" class="text-xs font-medium text-white">Introduction</span>
-        </div>
+  const [submissionResult, setSubmissionResult] = useState({
+    userScore: 0,
+    passingScore: 70,
+    isPassed: false,
+  });
 
-        <!-- Step 2 Circle -->
-        <div class="flex flex-col items-center gap-2 z-10">
-          <div id="step-2-circle" class="w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm transition-all">
-            2
-          </div>
-          <span id="step-2-text" class="text-xs font-medium text-gray-400">Test</span>
-        </div>
+  const [applicationDetails, setApplicationDetails] = useState(null);
 
-        <!-- Step 3 Circle -->
-        <div class="flex flex-col items-center gap-2 z-10">
-          <div id="step-3-circle" class="w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm transition-all">
-            3
-          </div>
-          <span id="step-3-text" class="text-xs font-medium text-gray-400">Result</span>
-        </div>
-      </div>
+  // 🛠️ دالة جلب التوكن المحفوظ
+  const getToken = () => localStorage.getItem('token') || localStorage.getItem('auth_token');
 
-      <!-- ========================================================================= -->
-      <!-- 📌 STEP 1: INTRODUCTION -->
-      <!-- ========================================================================= -->
-      <div id="step-1-content" class="space-y-6">
-        
-        <!-- Dashed Greeting Box -->
-        <div class="border border-dashed border-brand-yellow/80 rounded-2xl p-4 text-center text-xs leading-relaxed text-gray-200">
-          Thank You For Your Interest In Our Campaign.<br>
-          Please Read The Information Below Before Continuing.
-        </div>
+  // 🛠️ دالة تحويل مسارات الصور
+  const getStorageUrl = (path) => {
+    if (!path) return 'https://placehold.co/600x400';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    return `${BASE_URL}/${path.replace(/^\/?(storage\/)?/, 'storage/')}`;
+  };
 
-        <!-- Section 1: About -->
-        <div class="space-y-2">
-          <div class="flex items-center gap-2 text-brand-yellow font-bold text-sm">
-            <div class="w-5 h-5 rounded-full bg-brand-yellow text-brand-dark flex items-center justify-center text-xs font-extrabold">i</div>
-            <span>About This Campaign</span>
-          </div>
-          <p id="modal-about" class="text-xs text-gray-300 leading-relaxed pl-7">
-            Join Us In Planting 500 Trees To Improve Air Quality And Create A Healthier Environment For Future Generations.
-          </p>
-        </div>
+  // 📌 3. جلب ID الحملة من الرابط
+  const getCampaignId = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id') || 1;
+  };
 
-        <!-- Section 2: Responsibilities -->
-        <div class="space-y-2">
-          <div class="flex items-center gap-2 text-brand-yellow font-bold text-sm">
-            <i class="fa-solid fa-briefcase text-brand-yellow text-base"></i>
-            <span>Your Responsibilities</span>
-          </div>
-          <div id="modal-responsibilities" class="text-xs text-gray-300 space-y-1.5 pl-7 leading-relaxed">
-            <p>Follow The Team Leader Instructions.</p>
-            <p>Respect The Environment And Protect Trees.</p>
-            <p>Complete Assigned Tasks.</p>
-            <p>Cooperate With Other Volunteers.</p>
-          </div>
-        </div>
+  useEffect(() => {
+    const campaignId = getCampaignId();
+    fetchCampaignDetails(campaignId);
+  }, []);
 
-        <!-- Section 3: Notes -->
-        <div class="space-y-2">
-          <div class="flex items-center gap-2 text-brand-yellow font-bold text-sm">
-            <div class="w-5 h-5 rounded-full bg-brand-yellow text-brand-dark flex items-center justify-center text-xs font-extrabold">!</div>
-            <span>Important Notes</span>
-          </div>
-          <div id="modal-notes" class="text-xs text-gray-300 space-y-1.5 pl-7 leading-relaxed">
-            <p>Wear Comfortable Clothes And Closed Shoes.</p>
-            <p>Arrive On Time.</p>
-            <p>Bring Water If Needed.</p>
-            <p>Stay In The Assigned Area.</p>
-          </div>
-        </div>
-
-        <!-- Checkbox agreement -->
-        <div class="pt-2">
-          <label class="flex items-center gap-3 cursor-pointer text-xs text-gray-200 select-none">
-            <input type="checkbox" id="agreement-check" onchange="toggleContinueBtn()" class="w-4 h-4 accent-brand-yellow rounded border-gray-400 cursor-pointer">
-            <span>I have read and understood the campaign guidlines.</span>
-          </label>
-        </div>
-
-        <!-- Continue Button Step 1 -->
-        <button id="btn-continue-step1" onclick="goToStep2()" disabled class="w-full bg-brand-yellow disabled:opacity-40 disabled:cursor-not-allowed text-brand-dark font-bold py-3.5 rounded-2xl shadow-lg hover:bg-yellow-400 transition-all flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer">
-          <span>Continue To Test</span>
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-
-      </div>
-
-
-      <!-- ========================================================================= -->
-      <!-- 📌 STEP 2: TEST (QUESTIONS) -->
-      <!-- ========================================================================= -->
-      <div id="step-2-content" class="space-y-6 hidden">
-        <h3 class="text-center font-bold text-base text-brand-yellow">Campaign Qualification Test</h3>
-        <p class="text-center text-xs text-gray-300">Please answer the questions below to verify your eligibility:</p>
-
-        <!-- Dynamic Questions Container -->
-        <div id="questions-container" class="space-y-5 max-h-[50vh] overflow-y-auto pr-1">
-          <!-- Will be generated dynamically -->
-        </div>
-
-        <!-- Actions -->
-        <div class="flex items-center gap-3 pt-2">
-          <button onclick="goToStep1()" class="w-1/3 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-2xl text-xs transition">
-            Back
-          </button>
-          <button onclick="submitTestAndJoin()" class="w-2/3 bg-brand-yellow text-brand-dark font-bold py-3 rounded-2xl text-xs hover:bg-yellow-400 transition shadow-md">
-            Submit Application
-          </button>
-        </div>
-      </div>
-
-
-      <!-- ========================================================================= -->
-      <!-- 📌 STEP 3: RESULT -->
-      <!-- ========================================================================= -->
-      <div id="step-3-content" class="space-y-6 hidden text-center py-4">
-        <div class="w-16 h-16 rounded-full bg-green-500/20 text-green-400 mx-auto flex items-center justify-center text-3xl">
-          <i class="fa-solid fa-circle-check"></i>
-        </div>
-
-        <h3 class="font-bold text-lg text-white">Application Submitted Successfully!</h3>
-        <p class="text-xs text-gray-300 leading-relaxed max-w-sm mx-auto">
-          Thank you for applying. The organization team will review your answers and notify you about your application status soon.
-        </p>
-
-        <button onclick="closeJoinModal()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-2xl text-xs hover:bg-yellow-400 transition shadow-md">
-          Done & Close
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- 🟢 JavaScript Logic Integration -->
-  <script>
-    const BASE_URL = 'http://127.0.0.1:8000';
-    let loadedQuestions = [];
-    let userAnswers = {};
-
-    function getToken() {
-      return localStorage.getItem('token') || localStorage.getItem('auth_token');
-    }
-
-    // Modal Visibility Toggle
-    function openJoinModal() {
-      document.getElementById('join-modal-overlay').classList.remove('hidden');
-      goToStep1();
-    }
-
-    function closeJoinModal() {
-      document.getElementById('join-modal-overlay').classList.add('hidden');
-    }
-
-    function toggleContinueBtn() {
-      const isChecked = document.getElementById('agreement-check').checked;
-      document.getElementById('btn-continue-step1').disabled = !isChecked;
-    }
-
-    // Stepper Navigation
-    function goToStep1() {
-      hideAllSteps();
-      document.getElementById('step-1-content').classList.remove('hidden');
-      updateStepperUI(1);
-    }
-
-    async function goToStep2() {
-      hideAllSteps();
-      document.getElementById('step-2-content').classList.remove('hidden');
-      updateStepperUI(2);
-
-      // Fetch campaign quiz questions from backend
-      if (loadedQuestions.length === 0) {
-        await loadCampaignQuestions();
-      }
-    }
-
-    function goToStep3() {
-      hideAllSteps();
-      document.getElementById('step-3-content').classList.remove('hidden');
-      updateStepperUI(3);
-    }
-
-    function hideAllSteps() {
-      document.getElementById('step-1-content').classList.add('hidden');
-      document.getElementById('step-2-content').classList.add('hidden');
-      document.getElementById('step-3-content').classList.add('hidden');
-    }
-
-    function updateStepperUI(step) {
-      const circle1 = document.getElementById('step-1-circle');
-      const circle2 = document.getElementById('step-2-circle');
-      const circle3 = document.getElementById('step-3-circle');
-      const line = document.getElementById('step-line-progress');
-
-      if (step === 1) {
-        line.style.width = '0%';
-        circle1.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
-        circle2.className = "w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm";
-        circle3.className = "w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm";
-      } else if (step === 2) {
-        line.style.width = '50%';
-        circle1.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
-        circle2.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
-        circle3.className = "w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm";
-      } else if (step === 3) {
-        line.style.width = '100%';
-        circle1.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
-        circle2.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
-        circle3.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
-      }
-    }
-
-    // Render Questions dynamically from Laravel Quiz API
-    async function loadCampaignQuestions() {
-      const container = document.getElementById('questions-container');
-      container.innerHTML = '<p class="text-xs text-center text-gray-400">جاري تحميل أسئلة الاختبار...</p>';
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const campaignId = urlParams.get('id') || 2;
+  const fetchCampaignDetails = async (id) => {
+    try {
+      setLoading(true);
       const token = getToken();
+      const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      try {
-        // 👈 استخدام مسار الـ Quiz المطابق لملف routes/api.php عندك
-        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/quiz`, {
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+      const response = await fetch(`${BASE_URL}/api/campaigns/${id}`, { headers });
+      const result = await response.json();
+
+      if (response.ok && (result.status === 'success' || result.data)) {
+        setCampaignData(result.data || result);
+      } else {
+        alert(result.message || 'تعذر جلب تفاصيل الحملة المطلوبة');
+      }
+    } catch (error) {
+      console.error('API Fetch Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ⏱️ 4. العداد التنازلي للاختبار
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning && quizTimer > 0) {
+      interval = setInterval(() => {
+        setQuizTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (quizTimer === 0 && isTimerRunning) {
+      setIsTimerRunning(false);
+      alert('انتهى وقت الاختبار!');
+      handleSubmitQuiz();
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, quizTimer]);
+
+  const formatTimer = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // 🚀 5. فتح وإغلاق النافذة المنبثقة
+  const openJoinModal = () => {
+    setIsModalOpen(true);
+    setCurrentStep(1);
+  };
+
+  const closeJoinModal = () => {
+    setIsModalOpen(false);
+    setIsTimerRunning(false);
+  };
+
+  const handleStartQuiz = async () => {
+    setCurrentStep(2);
+    if (questions.length === 0) {
+      await loadQuizQuestions();
+    } else {
+      setIsTimerRunning(true);
+    }
+  };
+
+  // ❓ 6. جلب أسئلة الاختبار
+  const loadQuizQuestions = async () => {
+    const campaignId = getCampaignId();
+    const token = getToken();
+    try {
+      const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/quiz`, {
+        headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
+      });
+      const result = await response.json();
+      const loaded = result.questions || result.data || (Array.isArray(result) ? result : []);
+
+      setQuestions(loaded);
+      setCurrentQuestionIndex(0);
+      setQuizTimer(600);
+      setIsTimerRunning(true);
+    } catch (error) {
+      console.error('Quiz Error:', error);
+    }
+  };
+
+  const handleSelectOption = (qId, optionKey) => {
+    setUserAnswers((prev) => ({ ...prev, [qId]: optionKey }));
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    } else {
+      handleSubmitQuiz();
+    }
+  };
+
+  const handlePrevQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex((prev) => prev - 1);
+    }
+  };
+
+  // 📤 7. إرسال الإجابات إلى الباك إند
+  const handleSubmitQuiz = async () => {
+    const token = getToken();
+    if (!token) {
+      alert('يرجى تسجيل الدخول أولاً!');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const campaignId = getCampaignId();
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/submit-quiz`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ answers: userAnswers })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        const data = result.data || {};
+        const score = data.score !== undefined ? data.score : 0;
+        const passingScore = data.passing_score !== undefined ? data.passing_score : 70;
+        const passed = data.passed !== undefined ? data.passed : (score >= passingScore);
+
+        setSubmissionResult({
+          userScore: score,
+          passingScore: passingScore,
+          isPassed: passed
         });
-        
-        const result = await response.json();
-        const questions = result.data || result.questions || [];
-        loadedQuestions = questions;
 
-        if (questions.length === 0) {
-          container.innerHTML = '<p class="text-xs text-center text-gray-400">لا توجد أسئلة اختبار مسجلة لهذه الحملة.</p>';
-          return;
+        setIsTimerRunning(false);
+        setCurrentStep(3);
+      } else {
+        alert(result.message || 'فشل تقديم طلب الاختبار.');
+      }
+    } catch (error) {
+      console.error('Quiz Submission Error:', error);
+      alert('تعذر الاتصال بالسيرفر!');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // 📄 8. الانتقال إلى شاشة تأكيد الطلب
+  const handleResultAction = async () => {
+    if (submissionResult.isPassed) {
+      const token = getToken();
+      try {
+        const res = await fetch(`${BASE_URL}/api/my-applications`, {
+          headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (res.ok && result.data && result.data.length > 0) {
+          setApplicationDetails(result.data[0]);
         }
+      } catch (e) {
+        console.error('Error fetching application details:', e);
+      }
+      setCurrentStep(4);
+    } else {
+      setCurrentStep(1);
+    }
+  };
 
-        container.innerHTML = '';
-        questions.forEach((q, index) => {
-          container.innerHTML += `
-            <div class="bg-gray-800/50 p-4 rounded-2xl border border-white/5 space-y-3 text-right" dir="auto">
-              <p class="text-xs font-semibold text-white">${index + 1}. ${q.question_text}</p>
-              <div class="space-y-2 text-xs text-gray-300">
-                ${['a', 'b', 'c', 'd'].map(opt => q[`option_${opt}`] ? `
-                  <label class="flex items-center gap-2 bg-gray-900/40 p-2.5 rounded-xl cursor-pointer hover:bg-gray-900/80 transition">
-                    <input type="radio" name="q_${q.id || index}" value="${opt}" onchange="saveAnswer(${q.id || index}, '${opt}')" class="accent-brand-yellow">
-                    <span>${q[`option_${opt}`]}</span>
-                  </label>
-                ` : '').join('')}
+  // 🎨 استخراج كائنات البيانات
+  const camp = campaignData?.campaign_details || {};
+  const org = campaignData?.organization || {};
+  const contact = campaignData?.contact_us || {};
+  const featured = campaignData?.featured_campaigns || [];
+
+  const needed = parseInt(camp.volunteers_needed) || 60;
+  const registered = parseInt(camp.volunteers_registered) || 44;
+  const remaining = parseInt(camp.volunteers_remaining) || Math.max(0, needed - registered);
+  const percent = Math.min(100, Math.round((registered / needed) * 100));
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#0A3A45]"></div>
+          <p className="text-sm font-medium text-[#0A3A45]">Fetching Campaign Details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#F8FAFC] font-poppins text-[#0A3A45] min-h-screen flex flex-col justify-between antialiased">
+
+      {/* 1️⃣ Header / Navbar */}
+      <header className="bg-[#0A3A45] text-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.location.href = '/'}>
+            <div className="w-9 h-9 rounded-full bg-[#FCC21B] flex items-center justify-center font-bold text-[#0A3A45] text-lg">
+              A
+            </div>
+            <span className="font-bold text-2xl tracking-wide">Athar</span>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-8 text-sm font-normal text-gray-200">
+            <a href="#" className="hover:text-[#FCC21B] transition-colors">Home</a>
+            <a href="#" className="hover:text-[#FCC21B] transition-colors">Organization</a>
+            <a href="#" className="text-[#FCC21B] font-semibold border-b-2 border-[#FCC21B] pb-1">Campaigns</a>
+            <a href="#" className="hover:text-[#FCC21B] transition-colors">My campaigns</a>
+          </nav>
+
+          <div className="flex items-center gap-5 text-sm">
+            <button className="relative hover:text-[#FCC21B] transition-colors cursor-pointer" aria-label="Notifications">
+              <i className="fa-regular fa-bell text-lg"></i>
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <button className="hover:text-[#FCC21B] transition-colors cursor-pointer" aria-label="Profile">
+              <i className="fa-regular fa-user text-lg"></i>
+            </button>
+            <div className="flex items-center gap-1 cursor-pointer hover:text-[#FCC21B] transition-colors text-xs font-semibold">
+              <span>EN</span>
+              <i className="fa-solid fa-chevron-down text-[10px]"></i>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* 2️⃣ Main Content (واجهة الحملة الكاملة) */}
+      <main className="max-w-7xl mx-auto px-6 py-6 w-full flex-grow space-y-8">
+        <div>
+          <button onClick={() => window.history.back()} className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-[#0A3A45] hover:bg-[#FCC21B] hover:text-white transition-all cursor-pointer border border-gray-100" title="Go Back">
+            <i className="fa-solid fa-arrow-left"></i>
+          </button>
+        </div>
+
+        {/* Top Card: Campaign Details Overview */}
+        <div className="bg-white rounded-[28px] shadow-sm border border-black/5 p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-stretch">
+          <div className="flex-1 flex flex-col justify-between space-y-5">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <h1 className="text-2xl md:text-3xl font-bold text-[#0A3A45]">{camp.title || 'Tree Planting Campaign'}</h1>
+              <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#FCC21B] text-[#0A3A45] text-[12px] font-bold shadow-sm uppercase tracking-wider">
+                <i className={(camp.type || '').toLowerCase() === 'remote' ? 'fa-solid fa-laptop text-[13px]' : 'fa-solid fa-location-dot text-[13px]'}></i>
+                <span>{(camp.type || '').toLowerCase() === 'remote' ? 'Remote' : 'On-Ground'}</span>
               </div>
             </div>
-          `;
-        });
-      } catch (e) {
-        console.error(e);
-        container.innerHTML = '<p class="text-xs text-center text-red-400">تعذر جلب أسئلة الاختبار.</p>';
-      }
-    }
 
-    function saveAnswer(qId, val) {
-      userAnswers[qId] = val;
-    }
+            <div className="flex items-center gap-3">
+              <img src={getStorageUrl(org.logo_url)} className="w-9 h-9 rounded-full object-cover border border-gray-200" alt="Org Logo" />
+              <span className="font-medium text-[15px] text-[#5C6B73]">{org.name || 'The Lifa Organization'}</span>
+            </div>
 
-    // Submit API Integration (submit-quiz)
-    async function submitTestAndJoin() {
-      const token = getToken();
-      if (!token) {
-        alert('يرجى تسجيل الدخول أولاً لتتمكن من تقديم الاختبار!');
-        return;
-      }
+            <div className="h-[1.5px] bg-[#FCC21B] w-full my-1"></div>
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const campaignId = urlParams.get('id') || 2;
+            <div className="grid grid-cols-3 text-center items-center py-1">
+              <div className="px-2">
+                <p className="text-[12px] text-[#5C6B73] font-normal mb-1">Date</p>
+                <p className="font-semibold text-[14px] text-[#0A3A45]">{camp.date || '23/5/2026'}</p>
+              </div>
+              <div className="px-2 border-x border-[#FCC21B]">
+                <p className="text-[12px] text-[#5C6B73] font-normal mb-1">Location</p>
+                <p className="font-semibold text-[14px] text-[#0A3A45] truncate">{camp.location || 'Aleppo, The Public Park'}</p>
+              </div>
+              <div className="px-2">
+                <p className="text-[12px] text-[#5C6B73] font-normal mb-1">Time</p>
+                <p className="font-semibold text-[14px] text-[#0A3A45]">{camp.time || '9:00 AM'}</p>
+              </div>
+            </div>
 
-      try {
-        // 👈 استخدام مسار submit-quiz المطابق لملف routes/api.php عندك
-        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/submit-quiz`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ answers: userAnswers })
-        });
+            <div className="h-[1.5px] bg-[#FCC21B] w-full my-1"></div>
 
-        if (response.ok) {
-          goToStep3(); // الانتقال لصفحة النتيجة والنجاح
-        } else {
-          const res = await response.json();
-          alert(res.message || 'فشل تقديم طلب الاختبار، يرجى التحقق من الإجابات.');
-        }
-      } catch (e) {
-        console.error(e);
-        alert('تعذر الاتصال بالسيرفر، يرجى المحاولة لاحقاً!');
-      }
-    }
-  </script>
-</body>
-</html>
+            <div className="grid grid-cols-3 text-center items-center py-1">
+              <div>
+                <p className="text-[12px] text-[#5C6B73] font-normal mb-1">Volunteer Needed</p>
+                <p className="font-semibold text-[15px] text-[#0A3A45]">{needed}</p>
+              </div>
+              <div className="border-x border-[#FCC21B] px-2">
+                <p className="text-[12px] text-[#5C6B73] font-normal mb-1">Registered</p>
+                <p className="font-semibold text-[15px] text-[#0A3A45]">{registered}</p>
+              </div>
+              <div>
+                <p className="text-[12px] text-[#5C6B73] font-normal mb-1">Remaining</p>
+                <p className="font-semibold text-[15px] text-[#0A3A45]">{remaining}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 pt-1">
+              <div className="w-full bg-[#E5E9EB] h-2.5 rounded-full overflow-hidden">
+                <div className="bg-[#0A3A45] h-2.5 rounded-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
+              </div>
+              <span className="text-[13px] font-bold text-[#0A3A45]">{percent}%</span>
+            </div>
+          </div>
+
+          <div className="relative w-full lg:w-[460px] min-h-[260px] rounded-[24px] overflow-hidden border-4 border-[#0A3A45] shrink-0 bg-gray-100">
+            <img src={getStorageUrl(camp.image_url)} className="w-full h-full object-cover" alt="Campaign Banner" />
+            <div className="absolute bottom-3 right-3 bg-[#0A3A45]/90 text-white px-3 py-1.5 rounded-full text-[12px] flex items-center gap-1.5 shadow-md">
+              <i className="fa-solid fa-star text-[#FCC21B]"></i>
+              <span className="font-bold">{camp.rating || '5.0'}</span>
+              <span className="text-[#9BB0B5] font-light">| {camp.reviews_count || 100} Reviews</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Middle Section: Tabs & Sidebar Organization Details */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <div className="lg:col-span-2 bg-white rounded-[28px] shadow-sm border border-black/5 p-6 md:p-8 flex flex-col justify-between min-h-[360px]">
+            <div>
+              <div className="border-b-2 border-[#FCC21B] pb-3 flex space-x-12 text-sm font-semibold">
+                {['about', 'requirements', 'location'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`capitalize transition-colors cursor-pointer ${
+                      activeTab === tab
+                        ? 'text-[#0A3A45] font-bold relative pb-3 border-b-2 border-[#0A3A45] -mb-[14px]'
+                        : 'text-gray-500 hover:text-[#0A3A45]'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              {activeTab === 'about' && (
+                <div className="mt-6 space-y-6 text-gray-600 text-sm leading-relaxed">
+                  <p>{camp.about || camp.description || 'Loading details...'}</p>
+                  <div>
+                    <h4 className="font-bold text-[#0A3A45] text-base mb-3">What You Will Do :</h4>
+                    <ul className="space-y-2 list-none pl-1 text-gray-600">
+                      {(camp.tasks || camp.requirements || camp.responsibilities) ? (
+                        (Array.isArray(camp.tasks || camp.requirements)
+                          ? (camp.tasks || camp.requirements)
+                          : (camp.tasks || camp.requirements || '').split('\n')
+                        ).map((line, idx) => (
+                          line.trim() && (
+                            <li key={idx} className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block shrink-0"></span>
+                              <span>{line.replace(/^•\s*/, '')}</span>
+                            </li>
+                          )
+                        ))
+                      ) : (
+                        <li className="text-gray-400 text-xs">لا توجد تفاصيل إضافية موصوفة لهذه الحملة.</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'requirements' && (
+                <div className="mt-6 space-y-4 text-gray-600 text-sm leading-relaxed">
+                  <h4 className="font-bold text-[#0A3A45] text-base">Requirements & Criteria:</h4>
+                  <p className="whitespace-pre-line text-gray-700">{camp.responsibilities || camp.requirements}</p>
+                  <div className="border-t border-gray-100 my-2"></div>
+                  <p className="whitespace-pre-line text-xs italic text-gray-500">{camp.important_notes ? `Note: ${camp.important_notes}` : ''}</p>
+                </div>
+              )}
+
+              {activeTab === 'location' && (
+                <div className="mt-6 space-y-4 text-gray-600 text-sm leading-relaxed">
+                  <h4 className="font-bold text-[#0A3A45] text-base">Meeting Point & Location:</h4>
+                  <p className="flex items-center gap-2 text-gray-700">
+                    <i className="fa-solid fa-location-dot text-[#FCC21B]"></i>
+                    <span>{camp.location || '---'}</span>
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-8 flex justify-center">
+              <button onClick={openJoinModal} className="bg-[#0A3A45] hover:bg-opacity-95 text-white font-semibold px-10 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-md transition-all cursor-pointer">
+                <i className="fa-solid fa-right-to-bracket text-sm"></i>
+                <span>Join This Campaign</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Sidebar Org Info */}
+          <div className="bg-white rounded-[28px] shadow-sm border border-black/5 p-6 md:p-8 space-y-5">
+            <div>
+              <h3 className="text-lg font-bold text-[#0A3A45]">About The Organization</h3>
+              <div className="w-8 h-1 bg-[#FCC21B] rounded-full mt-1"></div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-1">
+              <div className="w-12 h-12 rounded-full border border-gray-200 overflow-hidden shrink-0">
+                <img src={getStorageUrl(org.logo_url)} alt="Organization Logo" className="w-full h-full object-cover" />
+              </div>
+              <span className="font-bold text-[#0A3A45] text-sm">{org.name || 'Loading...'}</span>
+            </div>
+
+            <p className="text-xs text-[#5C6B73] leading-relaxed">{org.description || 'A non-profit organization...'}</p>
+
+            <div className="space-y-2.5 text-xs text-[#5C6B73] pt-1">
+              <div className="flex items-center gap-2">
+                <i className="fa-solid fa-location-dot text-[#FCC21B]"></i>
+                <span>{org.address || '---'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <i className="fa-solid fa-globe text-[#FCC21B]"></i>
+                <a href={org.website_url || '#'} target="_blank" rel="noreferrer" className="text-[#5C6B73] hover:underline truncate">
+                  {(org.website_url || 'www.thelife.com').replace(/^https?:\/\//, '')}
+                </a>
+              </div>
+            </div>
+
+            <button onClick={() => org.id && (window.location.href = `/organization-details.html?id=${org.id}`)} className="w-full bg-[#0A3A45] hover:bg-opacity-95 text-white text-xs font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer">
+              <i className="fa-solid fa-bars-staggered"></i>
+              <span>View Organization</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Featured Campaigns Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start pt-2">
+          <div className="lg:col-span-2 bg-white rounded-[28px] shadow-sm border border-black/5 p-6 md:p-8 space-y-6">
+            <div>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-[#0A3A45]">Featured Campaigns</h2>
+                <a href="#" className="text-xs text-[#5C6B73] hover:text-[#0A3A45] transition-colors">view all</a>
+              </div>
+              <div className="w-8 h-1 bg-[#FCC21B] rounded-full mt-1"></div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {featured.map((item) => (
+                <div key={item.id} className="bg-white rounded-[28px] p-5 border border-gray-100 shadow-sm flex flex-col items-center text-center space-y-3 max-w-[240px] mx-auto">
+                  <div className="w-full h-28 rounded-[40px] overflow-hidden border-[3px] border-[#0A3A45] bg-white flex items-center justify-center p-1 shrink-0">
+                    <img
+                      src={getStorageUrl(item.image_url || item.image)}
+                      className="w-full h-full object-contain rounded-[32px]"
+                      alt={item.title}
+                      onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x120'; }}
+                    />
+                  </div>
+
+                  <div className="w-full text-left space-y-1 pt-1">
+                    <h3 className="font-bold text-[13px] text-[#0A3A45] leading-tight line-clamp-1">{item.title}</h3>
+                    <div className="w-8 h-[2px] bg-[#FCC21B] rounded-full"></div>
+                  </div>
+
+                  <div className="text-[11px] text-[#5C6B73] space-y-2 w-full text-left pt-1">
+                    <p className="flex items-center gap-2">
+                      <i className="fa-solid fa-users text-[#FCC21B] text-xs"></i>
+                      <span className="font-medium text-gray-700 truncate">{item.org_name || 'Organization'}</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <i className="fa-solid fa-location-dot text-[#FCC21B] text-xs"></i>
+                      <span className="text-gray-500 truncate">{item.location || 'Location'}</span>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-[11px] w-full text-left pt-1">
+                    <i className="fa-solid fa-star text-[#FCC21B] text-xs"></i>
+                    <span className="font-bold text-[#0A3A45]">{item.rating || '5'}</span>
+                    <span className="text-gray-300">|</span>
+                    <span className="text-[#5C6B73] font-light">{item.reviews_count || '100'} Reviews</span>
+                  </div>
+
+                  <button onClick={() => window.location.href = `?id=${item.id}`} className="w-full bg-[#0A3A45] hover:bg-opacity-95 text-white text-[12px] font-semibold py-2.5 rounded-2xl transition shadow-md cursor-pointer mt-2">
+                    See details
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Us Card */}
+          <div className="bg-white rounded-[28px] shadow-sm border border-black/5 p-6 md:p-8 space-y-6">
+            <div>
+              <h2 className="text-lg font-bold text-[#0A3A45]">Contact Us</h2>
+              <div className="w-8 h-1 bg-[#FCC21B] rounded-full mt-1"></div>
+            </div>
+
+            <div className="space-y-4 text-xs font-medium">
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-full bg-[#0A3A45] text-white flex items-center justify-center shrink-0">
+                  <i className="fa-solid fa-phone text-xs"></i>
+                </div>
+                <div>
+                  <p className="font-bold text-[#0A3A45]">Call us</p>
+                  <p className="text-[#5C6B73]">{contact.phone || '+963-906-156-2849'}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-full bg-[#0A3A45] text-white flex items-center justify-center shrink-0">
+                  <i className="fa-solid fa-envelope text-xs"></i>
+                </div>
+                <div>
+                  <p className="font-bold text-[#0A3A45]">Mail Us</p>
+                  <p className="text-[#5C6B73]">{contact.email || 'Athar@gmail.com'}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-full bg-[#0A3A45] text-white flex items-center justify-center shrink-0">
+                  <i className="fa-solid fa-location-dot text-xs"></i>
+                </div>
+                <div>
+                  <p className="font-bold text-[#0A3A45]">Visit Us</p>
+                  <p className="text-[#5C6B73]">{contact.address || 'Syria-Aleppo'}</p>
+                </div>
+              </div>
+            </div>
+
+            <button onClick={() => alert('Opening Issue Report Dialog...')} className="w-full bg-[#0A3A45] hover:bg-opacity-95 text-white text-xs font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md mt-4">
+              <i className="fa-solid fa-circle-exclamation"></i>
+              <span>Report Issue</span>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-[#0A3A45] text-white text-center py-4 text-xs font-normal mt-6">
+        All Rights Reserved © Athar Platform.
+      </footer>
+
+      {/* 🎯 3️⃣ Modal Container (Join Flow Pop-Up) */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0A3A45] text-white w-full max-w-xl rounded-[32px] p-6 md:p-8 relative shadow-2xl border border-white/10 max-h-[90vh] overflow-y-auto">
+            
+            {/* Close Button */}
+            <button onClick={closeJoinModal} className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors cursor-pointer text-xl">
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+
+            {/* Stepper Header */}
+            {currentStep <= 3 && (
+              <div className="flex items-center justify-between max-w-xs mx-auto mb-8 relative pt-2">
+                <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-gray-600/60 -translate-y-3 z-0"></div>
+                <div
+                  className="absolute top-1/2 left-0 h-[2px] bg-[#FCC21B] -translate-y-3 z-0 transition-all duration-300"
+                  style={{ width: currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : '100%' }}
+                ></div>
+
+                <div className="flex flex-col items-center gap-2 z-10">
+                  <div className="w-9 h-9 rounded-full bg-[#FCC21B] text-[#0A3A45] font-bold flex items-center justify-center text-sm shadow-md">1</div>
+                  <span className="text-xs font-medium text-white">Introduction</span>
+                </div>
+
+                <div className="flex flex-col items-center gap-2 z-10">
+                  <div className={`w-9 h-9 rounded-full font-bold flex items-center justify-center text-sm ${currentStep >= 2 ? 'bg-[#FCC21B] text-[#0A3A45] shadow-md' : 'bg-gray-600/70 text-white'}`}>2</div>
+                  <span className={`text-xs font-medium ${currentStep >= 2 ? 'text-white' : 'text-gray-400'}`}>Test</span>
+                </div>
+
+                <div className="flex flex-col items-center gap-2 z-10">
+                  <div className={`w-9 h-9 rounded-full font-bold flex items-center justify-center text-sm ${currentStep === 3 ? 'bg-[#FCC21B] text-[#0A3A45] shadow-md' : 'bg-gray-600/70 text-white'}`}>3</div>
+                  <span className={`text-xs font-medium ${currentStep === 3 ? 'text-white' : 'text-gray-400'}`}>Result</span>
+                </div>
+              </div>
+            )}
+
+            {/* 📌 STEP 1: INTRODUCTION */}
+            {currentStep === 1 && (
+              <div className="space-y-6">
+                <div className="border border-dashed border-[#FCC21B]/80 rounded-2xl p-4 text-center text-xs leading-relaxed text-gray-200">
+                  Thank You For Your Interest In Our Campaign.<br />Please Read The Information Below Before Continuing.
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-[#FCC21B] font-bold text-sm">
+                    <div className="w-5 h-5 rounded-full bg-[#FCC21B] text-[#0A3A45] flex items-center justify-center text-xs font-extrabold">i</div>
+                    <span>About This Campaign</span>
+                  </div>
+                  <p className="text-xs text-gray-300 leading-relaxed pl-7">
+                    {camp.about || 'Join Us In Planting 500 Trees To Improve Air Quality And Create A Healthier Environment For Future Generations.'}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-[#FCC21B] font-bold text-sm">
+                    <i className="fa-solid fa-briefcase text-base"></i>
+                    <span>Your Responsibilities</span>
+                  </div>
+                  <div className="text-xs text-gray-300 space-y-1.5 pl-7 leading-relaxed">
+                    <p>Follow The Team Leader Instructions.</p>
+                    <p>Respect The Environment And Protect Trees.</p>
+                    <p>Complete Assigned Tasks.</p>
+                    <p>Cooperate With Other Volunteers.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-[#FCC21B] font-bold text-sm">
+                    <div className="w-5 h-5 rounded-full bg-[#FCC21B] text-[#0A3A45] flex items-center justify-center text-xs font-extrabold">!</div>
+                    <span>Important Notes</span>
+                  </div>
+                  <div className="text-xs text-gray-300 space-y-1.5 pl-7 leading-relaxed">
+                    <p>Wear Comfortable Clothes And Closed Shoes.</p>
+                    <p>Arrive On Time.</p>
+                    <p>Bring Water If Needed.</p>
+                    <p>Stay In The Assigned Area.</p>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <label className="flex items-center gap-3 cursor-pointer text-xs text-gray-200 select-none">
+                    <input
+                      type="checkbox"
+                      checked={agreementChecked}
+                      onChange={(e) => setAgreementChecked(e.target.checked)}
+                      className="w-4 h-4 accent-[#FCC21B] rounded border-gray-400 cursor-pointer"
+                    />
+                    <span>I have read and understood the campaign guidlines.</span>
+                  </label>
+                </div>
+
+                <button
+                  onClick={handleStartQuiz}
+                  disabled={!agreementChecked}
+                  className="w-full bg-[#FCC21B] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A3A45] font-bold py-3.5 rounded-2xl shadow-lg hover:bg-yellow-400 transition-all flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer"
+                >
+                  <span>Continue To Test</span>
+                  <i className="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            )}
+
+            {/* 📌 STEP 2: TEST */}
+            {currentStep === 2 && (
+              <div className="space-y-6">
+                <div className="border border-dashed border-[#FCC21B]/80 rounded-2xl p-3.5 text-center text-xs leading-relaxed text-gray-200">
+                  Answer The Following Questions To Qualify For The Campaign.
+                </div>
+
+                <div className="flex items-center justify-between text-xs font-semibold px-1">
+                  <span className="text-white text-sm">
+                    Question {questions.length > 0 ? currentQuestionIndex + 1 : 0} Of {questions.length}
+                  </span>
+                  <div className="flex items-center gap-1.5 text-[#FCC21B]">
+                    <i className="fa-solid fa-stopwatch text-sm"></i>
+                    <span className="font-bold tracking-wider">{formatTimer(quizTimer)}</span>
+                  </div>
+                </div>
+
+                {questions.length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#FCC21B] mx-auto mb-2"></div>
+                    <p className="text-xs text-gray-300">Loading test questions...</p>
+                  </div>
+                ) : (
+                  <>
+                    <h4 className="text-sm md:text-base font-semibold text-white leading-relaxed min-h-[48px]">
+                      {questions[currentQuestionIndex]?.question_text || questions[currentQuestionIndex]?.question || ''}
+                    </h4>
+
+                    <div className="space-y-3">
+                      {(questions[currentQuestionIndex]?.options || [
+                        { key: 'a', text: questions[currentQuestionIndex]?.option_a },
+                        { key: 'b', text: questions[currentQuestionIndex]?.option_b },
+                        { key: 'c', text: questions[currentQuestionIndex]?.option_c },
+                        { key: 'd', text: questions[currentQuestionIndex]?.option_d },
+                      ]).map((opt) => {
+                        const optKey = opt.key || opt.id || opt;
+                        const optText = opt.text || opt;
+                        const qId = questions[currentQuestionIndex]?.id || currentQuestionIndex;
+                        const isChecked = String(userAnswers[qId]).toLowerCase() === String(optKey).toLowerCase();
+
+                        return optText ? (
+                          <label
+                            key={optKey}
+                            onClick={() => handleSelectOption(qId, optKey)}
+                            className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                              isChecked ? 'border-[#FCC21B] bg-black/30' : 'border-[#FCC21B]/30 bg-black/10 hover:border-[#FCC21B]/60'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-md border border-[#FCC21B] flex items-center justify-center shrink-0 ${isChecked ? 'bg-[#FCC21B] text-[#0A3A45]' : 'bg-transparent'}`}>
+                              {isChecked && <i className="fa-solid fa-check text-xs"></i>}
+                            </div>
+                            <span className="text-xs text-gray-200 select-none">{optText}</span>
+                          </label>
+                        ) : null;
+                      })}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 pt-4">
+                      <button
+                        type="button"
+                        onClick={handlePrevQuestion}
+                        className={`w-1/2 border border-[#FCC21B] text-white hover:bg-[#FCC21B]/10 font-bold py-3 rounded-2xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer ${currentQuestionIndex === 0 ? 'invisible' : 'visible'}`}
+                      >
+                        <i className="fa-solid fa-arrow-left"></i>
+                        <span>Previous</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleNextQuestion}
+                        disabled={isSubmitting}
+                        className="w-1/2 bg-[#FCC21B] hover:bg-yellow-400 text-[#0A3A45] font-bold py-3 rounded-2xl text-xs transition-all shadow-md cursor-pointer disabled:opacity-50"
+                      >
+                        <span>{isSubmitting ? 'Submitting...' : currentQuestionIndex === questions.length - 1 ? 'Submit Application' : 'Next'}</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* 📌 STEP 3: RESULT */}
+            {currentStep === 3 && (
+              <div className="space-y-6 text-center">
+                <div className="border border-dashed border-[#FCC21B]/80 rounded-2xl p-3.5 flex items-center gap-3 text-left">
+                  <div className="w-9 h-9 rounded-xl bg-[#FCC21B]/10 flex items-center justify-center shrink-0">
+                    <i className="fa-regular fa-envelope text-[#FCC21B] text-lg"></i>
+                  </div>
+                  <p className="text-[11px] text-gray-200 leading-relaxed">
+                    Your Request Will Be Reviewed By The Organization.<br />You Will Receive A Notification Once A Decision Is Made.
+                  </p>
+                </div>
+
+                <div className="w-16 h-16 rounded-full bg-[#FCC21B] text-[#0A3A45] mx-auto flex items-center justify-center text-3xl font-extrabold shadow-lg">
+                  <i className={submissionResult.isPassed ? 'fa-solid fa-check' : 'fa-solid fa-xmark'}></i>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="font-bold text-xl text-white">
+                    {submissionResult.isPassed ? 'Congratulations!' : 'Test Not Passed'}
+                  </h3>
+                  <p className="text-xs text-gray-300">
+                    {submissionResult.isPassed ? 'You Have Passed The Test Successfully.' : 'Unfortunately, You Did Not Reach The Required Passing Score.'}
+                  </p>
+                </div>
+
+                <div className="border border-[#FCC21B]/80 rounded-2xl p-4 grid grid-cols-2 text-center items-center divide-x divide-[#FCC21B]/50 bg-black/10">
+                  <div>
+                    <p className="text-[11px] text-gray-300 mb-1">your Score</p>
+                    <p className={`text-2xl font-bold ${submissionResult.isPassed ? 'text-[#FCC21B]' : 'text-red-500'}`}>
+                      {submissionResult.userScore}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-gray-300 mb-1">Passing Score</p>
+                    <p className="text-2xl font-bold text-white">{submissionResult.passingScore}%</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-left px-1">
+                  <i className={submissionResult.isPassed ? 'fa-solid fa-gift text-[#FCC21B] text-2xl shrink-0' : 'fa-solid fa-triangle-exclamation text-[#FCC21B] text-2xl shrink-0'}></i>
+                  <p className="text-xs font-semibold text-gray-200 leading-snug">
+                    {submissionResult.isPassed
+                      ? 'Great Job! You Are Now Qualified To Join This Campaign.'
+                      : 'Review The Campaign Guidelines And Try Again.'}
+                  </p>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={handleResultAction}
+                    className="w-full bg-[#FCC21B] hover:bg-yellow-400 text-[#0A3A45] font-bold py-3.5 rounded-2xl text-xs transition shadow-lg cursor-pointer"
+                  >
+                    {submissionResult.isPassed ? 'Send Participation request' : 'Back to guidlines'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* 📌 STEP 4: REQUEST SUBMITTED */}
+            {currentStep === 4 && (
+              <div className="space-y-6 text-center">
+                <div className="space-y-1 pt-2">
+                  <h3 className="font-bold text-xl text-white">Request Submitted!</h3>
+                  <p className="text-xs text-gray-300">Your Participation Request Has Been Sent To The Organization.</p>
+                </div>
+
+                <div className="border border-[#FCC21B] rounded-2xl p-5 text-left bg-black/20 space-y-4">
+                  <h4 className="text-xs font-bold text-[#FCC21B] tracking-wide border-b border-[#FCC21B]/30 pb-2">
+                    Applications Status
+                  </h4>
+
+                  <div className="space-y-3.5 text-xs">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-[#FCC21B]/10 flex items-center justify-center shrink-0">
+                        <i className="fa-solid fa-desktop text-[#FCC21B] text-sm"></i>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-gray-400">Current Status</p>
+                        <p className="font-bold text-white">{applicationDetails?.status || 'Pending , Under Review'}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1 border-t border-white/5">
+                      <div className="w-8 h-8 rounded-xl bg-[#FCC21B]/10 flex items-center justify-center shrink-0">
+                        <i className="fa-solid fa-building text-[#FCC21B] text-sm"></i>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-gray-400">Organization</p>
+                        <p className="font-bold text-white">{applicationDetails?.organization_name || org.name || 'The Life Organization'}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1 border-t border-white/5">
+                      <div className="w-8 h-8 rounded-xl bg-[#FCC21B]/10 flex items-center justify-center shrink-0">
+                        <i className="fa-solid fa-copy text-[#FCC21B] text-sm"></i>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-gray-400">Campaign</p>
+                        <p className="font-bold text-white">{applicationDetails?.campaign_title || camp.title || 'Tree Planting Campaign'}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1 border-t border-white/5">
+                      <div className="w-8 h-8 rounded-xl bg-[#FCC21B]/10 flex items-center justify-center shrink-0">
+                        <i className="fa-solid fa-location-dot text-[#FCC21B] text-sm"></i>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-gray-400">Location</p>
+                        <p className="font-bold text-white">{applicationDetails?.location || camp.location || 'Aleppo, The Public Park'}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1 border-t border-white/5">
+                      <div className="w-8 h-8 rounded-xl bg-[#FCC21B]/10 flex items-center justify-center shrink-0">
+                        <i className="fa-solid fa-calendar-days text-[#FCC21B] text-sm"></i>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-gray-400">Submitted On</p>
+                        <p className="font-bold text-white">
+                          {new Date().toLocaleDateString('en-ZA')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => window.location.href = '/my-campaigns'}
+                    className="w-full bg-[#FCC21B] hover:bg-yellow-400 text-[#0A3A45] font-bold py-3.5 rounded-2xl text-xs transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Go To My Campaigns</span>
+                    <i className="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
