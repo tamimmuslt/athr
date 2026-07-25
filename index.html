@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Athar - Campaign Details</title>
+  <title>Athar - Join Campaign Flow</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,10 +11,10 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Google Fonts (Poppins & Outfit) -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -22,536 +22,340 @@
         extend: {
           colors: {
             brand: {
-              dark: '#0A3A45',      // اللون الزيتي/الكحلي الأساسي
-              yellow: '#FCC21B',    // اللون الأصفر المعتمد
-              bg: '#F8FAFC',        // خلفية الصفحة
-              sub: '#5C6B73',       // لون النصوص الفرعية
-              red: '#EE1D52'        // لون الأخطاء أو التنبيهات
+              dark: '#0A3A45',      // اللون الكحلي/الزيتي الأساسي
+              yellow: '#FCC21B',    // اللون الأصفر الأساسي
+              sub: '#8E9A9F',       // النصوص الفرعية على الخلفية الداكنة
             }
           },
           fontFamily: {
             poppins: ['Poppins', 'sans-serif'],
-            outfit: ['Outfit', 'sans-serif'],
           }
         }
       }
     }
   </script>
-
-  <style>
-    .custom-card {
-      background: #ffffff;
-      border-radius: 28px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-      border: 1px solid rgba(0, 0, 0, 0.02);
-    }
-  </style>
 </head>
-<body class="bg-brand-bg font-poppins text-brand-dark min-h-screen flex flex-col justify-between antialiased">
+<body class="bg-gray-100 font-poppins min-h-screen flex items-center justify-center p-4">
 
-  <!-- 1️⃣ Header / Navbar -->
-  <header class="bg-brand-dark text-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+  <!-- 🟢 زر تجريبي لفتح النافذة -->
+  <button onclick="openJoinModal()" class="bg-brand-dark text-white px-8 py-3 rounded-2xl font-semibold shadow-md hover:bg-opacity-90">
+    Open Join Modal
+  </button>
+
+  <!-- 🎯 Modal Container Background Overlay -->
+  <div id="join-modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    
+    <!-- Modal Card Wrapper -->
+    <div class="bg-brand-dark text-white w-full max-w-xl rounded-[32px] p-6 md:p-8 relative shadow-2xl border border-white/10 max-h-[90vh] overflow-y-auto">
       
-      <!-- Logo -->
-      <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='/'">
-        <div class="w-9 h-9 rounded-full bg-brand-yellow flex items-center justify-center font-bold text-brand-dark text-lg">
-          A
+      <!-- Close Button (X) -->
+      <button onclick="closeJoinModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors cursor-pointer text-xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- 1️⃣ Steps Stepper Header -->
+      <div class="flex items-center justify-between max-w-xs mx-auto mb-8 relative pt-2">
+        <!-- Connecting Line Background -->
+        <div class="absolute top-1/2 left-0 right-0 h-[2px] bg-gray-600/60 -translate-y-3 z-0"></div>
+        <div id="step-line-progress" class="absolute top-1/2 left-0 h-[2px] bg-brand-yellow -translate-y-3 z-0 transition-all duration-300" style="width: 0%;"></div>
+
+        <!-- Step 1 Circle -->
+        <div class="flex flex-col items-center gap-2 z-10">
+          <div id="step-1-circle" class="w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md transition-all">
+            1
+          </div>
+          <span id="step-1-text" class="text-xs font-medium text-white">Introduction</span>
         </div>
-        <span class="font-bold text-2xl tracking-wide">Athar</span>
-      </div>
-      
-      <!-- Navigation Links -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-normal text-gray-200">
-        <a href="#" class="hover:text-brand-yellow transition-colors">Home</a>
-        <a href="#" class="hover:text-brand-yellow transition-colors">Organization</a>
-        <a href="#" class="text-brand-yellow font-semibold border-b-2 border-brand-yellow pb-1">Campaigns</a>
-        <a href="#" class="hover:text-brand-yellow transition-colors">My campaigns</a>
-      </nav>
 
-      <!-- User Actions -->
-      <div class="flex items-center gap-5 text-sm">
-        <button class="relative hover:text-brand-yellow transition-colors cursor-pointer" aria-label="Notifications">
-          <i class="fa-regular fa-bell text-lg"></i>
-          <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
-        <button class="hover:text-brand-yellow transition-colors cursor-pointer" aria-label="Profile">
-          <i class="fa-regular fa-user text-lg"></i>
-        </button>
-        <div class="flex items-center gap-1 cursor-pointer hover:text-brand-yellow transition-colors text-xs font-semibold">
-          <span>EN</span>
-          <i class="fa-solid fa-chevron-down text-[10px]"></i>
+        <!-- Step 2 Circle -->
+        <div class="flex flex-col items-center gap-2 z-10">
+          <div id="step-2-circle" class="w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm transition-all">
+            2
+          </div>
+          <span id="step-2-text" class="text-xs font-medium text-gray-400">Test</span>
+        </div>
+
+        <!-- Step 3 Circle -->
+        <div class="flex flex-col items-center gap-2 z-10">
+          <div id="step-3-circle" class="w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm transition-all">
+            3
+          </div>
+          <span id="step-3-text" class="text-xs font-medium text-gray-400">Result</span>
         </div>
       </div>
 
-    </div>
-  </header>
+      <!-- ========================================================================= -->
+      <!-- 📌 STEP 1: INTRODUCTION -->
+      <!-- ========================================================================= -->
+      <div id="step-1-content" class="space-y-6">
+        
+        <!-- Dashed Greeting Box -->
+        <div class="border border-dashed border-brand-yellow/80 rounded-2xl p-4 text-center text-xs leading-relaxed text-gray-200">
+          Thank You For Your Interest In Our Campaign.<br>
+          Please Read The Information Below Before Continuing.
+        </div>
 
-  <!-- Loading Overlay -->
-  <div id="loading-spinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
-    <div class="flex flex-col items-center gap-3">
-      <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-brand-dark"></div>
-      <p class="text-sm font-medium text-brand-dark">Fetching Campaign Details...</p>
+        <!-- Section 1: About -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-brand-yellow font-bold text-sm">
+            <div class="w-5 h-5 rounded-full bg-brand-yellow text-brand-dark flex items-center justify-center text-xs font-extrabold">i</div>
+            <span>About This Campaign</span>
+          </div>
+          <p id="modal-about" class="text-xs text-gray-300 leading-relaxed pl-7">
+            Join Us In Planting 500 Trees To Improve Air Quality And Create A Healthier Environment For Future Generations.
+          </p>
+        </div>
+
+        <!-- Section 2: Responsibilities -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-brand-yellow font-bold text-sm">
+            <i class="fa-solid fa-briefcase text-brand-yellow text-base"></i>
+            <span>Your Responsibilities</span>
+          </div>
+          <div id="modal-responsibilities" class="text-xs text-gray-300 space-y-1.5 pl-7 leading-relaxed">
+            <p>Follow The Team Leader Instructions.</p>
+            <p>Respect The Environment And Protect Trees.</p>
+            <p>Complete Assigned Tasks.</p>
+            <p>Cooperate With Other Volunteers.</p>
+          </div>
+        </div>
+
+        <!-- Section 3: Notes -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-brand-yellow font-bold text-sm">
+            <div class="w-5 h-5 rounded-full bg-brand-yellow text-brand-dark flex items-center justify-center text-xs font-extrabold">!</div>
+            <span>Important Notes</span>
+          </div>
+          <div id="modal-notes" class="text-xs text-gray-300 space-y-1.5 pl-7 leading-relaxed">
+            <p>Wear Comfortable Clothes And Closed Shoes.</p>
+            <p>Arrive On Time.</p>
+            <p>Bring Water If Needed.</p>
+            <p>Stay In The Assigned Area.</p>
+          </div>
+        </div>
+
+        <!-- Checkbox agreement -->
+        <div class="pt-2">
+          <label class="flex items-center gap-3 cursor-pointer text-xs text-gray-200 select-none">
+            <input type="checkbox" id="agreement-check" onchange="toggleContinueBtn()" class="w-4 h-4 accent-brand-yellow rounded border-gray-400 cursor-pointer">
+            <span>I have read and understood the campaign guidlines.</span>
+          </label>
+        </div>
+
+        <!-- Continue Button Step 1 -->
+        <button id="btn-continue-step1" onclick="goToStep2()" disabled class="w-full bg-brand-yellow disabled:opacity-40 disabled:cursor-not-allowed text-brand-dark font-bold py-3.5 rounded-2xl shadow-lg hover:bg-yellow-400 transition-all flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer">
+          <span>Continue To Test</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+      </div>
+
+
+      <!-- ========================================================================= -->
+      <!-- 📌 STEP 2: TEST (QUESTIONS) -->
+      <!-- ========================================================================= -->
+      <div id="step-2-content" class="space-y-6 hidden">
+        <h3 class="text-center font-bold text-base text-brand-yellow">Campaign Qualification Test</h3>
+        <p class="text-center text-xs text-gray-300">Please answer the questions below to verify your eligibility:</p>
+
+        <!-- Dynamic Questions Container -->
+        <div id="questions-container" class="space-y-5 max-h-[50vh] overflow-y-auto pr-1">
+          <!-- Will be generated dynamically -->
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-2">
+          <button onclick="goToStep1()" class="w-1/3 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-2xl text-xs transition">
+            Back
+          </button>
+          <button onclick="submitTestAndJoin()" class="w-2/3 bg-brand-yellow text-brand-dark font-bold py-3 rounded-2xl text-xs hover:bg-yellow-400 transition shadow-md">
+            Submit Application
+          </button>
+        </div>
+      </div>
+
+
+      <!-- ========================================================================= -->
+      <!-- 📌 STEP 3: RESULT -->
+      <!-- ========================================================================= -->
+      <div id="step-3-content" class="space-y-6 hidden text-center py-4">
+        <div class="w-16 h-16 rounded-full bg-green-500/20 text-green-400 mx-auto flex items-center justify-center text-3xl">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+
+        <h3 class="font-bold text-lg text-white">Application Submitted Successfully!</h3>
+        <p class="text-xs text-gray-300 leading-relaxed max-w-sm mx-auto">
+          Thank you for applying. The organization team will review your answers and notify you about your application status soon.
+        </p>
+
+        <button onclick="closeJoinModal()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-2xl text-xs hover:bg-yellow-400 transition shadow-md">
+          Done & Close
+        </button>
+      </div>
+
     </div>
   </div>
 
-  <!-- 2️⃣ Main Content -->
-  <main class="max-w-7xl mx-auto px-6 py-6 w-full flex-grow space-y-8">
 
-    <!-- Back Button -->
-    <div>
-      <button onclick="window.history.back()" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-brand-dark hover:bg-brand-yellow hover:text-white transition-all cursor-pointer border border-gray-100" title="Go Back">
-        <i class="fa-solid fa-arrow-left"></i>
-      </button>
-    </div>
-
-    <!-- Top Card: Campaign Overview & Image -->
-    <div class="custom-card p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-stretch">
-      
-      <!-- Left Column: Info & Details -->
-      <div class="flex-1 flex flex-col justify-between space-y-5">
-        
-        <!-- Title & On-Ground Badge -->
-        <div class="flex items-center justify-between flex-wrap gap-3">
-          <h1 id="camp-title" class="text-2xl md:text-3xl font-bold text-brand-dark">Loading...</h1>
-          
-          <!-- 🏷️ شارة نوع الحملة -->
-          <div id="camp-type-badge" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-brand-yellow text-brand-dark text-[12px] font-bold shadow-sm uppercase tracking-wider">
-            <i id="camp-type-icon" class="fa-solid fa-location-dot text-[13px]"></i>
-            <span id="camp-type-text">On-Ground</span>
-          </div>
-        </div>
-
-        <!-- Organization Info -->
-        <div class="flex items-center gap-3">
-          <img id="org-small-logo" src="https://via.placeholder.com/150" class="w-9 h-9 rounded-full object-cover border border-gray-200" alt="Org Logo">
-          <span id="org-small-name" class="font-medium text-[15px] text-brand-sub">Loading...</span>
-        </div>
-
-        <!-- Yellow Divider 1 -->
-        <div class="h-[1.5px] bg-brand-yellow w-full my-1"></div>
-
-        <!-- Info Grid 1 (Date, Location, Time) -->
-        <div class="grid grid-cols-3 text-center items-center py-1">
-          <div class="px-2">
-            <p class="text-[12px] text-brand-sub font-normal mb-1">Date</p>
-            <p id="camp-date" class="font-semibold text-[14px] text-brand-dark">--/--/----</p>
-          </div>
-          <div class="px-2 border-x border-brand-yellow">
-            <p class="text-[12px] text-brand-sub font-normal mb-1">Location</p>
-            <p id="camp-location" class="font-semibold text-[14px] text-brand-dark truncate">---</p>
-          </div>
-          <div class="px-2">
-            <p class="text-[12px] text-brand-sub font-normal mb-1">Time</p>
-            <p id="camp-time" class="font-semibold text-[14px] text-brand-dark">--:--</p>
-          </div>
-        </div>
-
-        <!-- Yellow Divider 2 -->
-        <div class="h-[1.5px] bg-brand-yellow w-full my-1"></div>
-
-        <!-- Info Grid 2 (Volunteer Statistics) -->
-        <div class="grid grid-cols-3 text-center items-center py-1">
-          <div>
-            <p class="text-[12px] text-brand-sub font-normal mb-1">Volunteer Needed</p>
-            <p id="vol-needed" class="font-semibold text-[15px] text-brand-dark">0</p>
-          </div>
-          <div class="border-x border-brand-yellow px-2">
-            <p class="text-[12px] text-brand-sub font-normal mb-1">Registered</p>
-            <p id="vol-registered" class="font-semibold text-[15px] text-brand-dark">0</p>
-          </div>
-          <div>
-            <p class="text-[12px] text-brand-sub font-normal mb-1">Remaining</p>
-            <p id="vol-remaining" class="font-semibold text-[15px] text-brand-dark">0</p>
-          </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="flex items-center gap-4 pt-1">
-          <div class="w-full bg-[#E5E9EB] h-2.5 rounded-full overflow-hidden">
-            <div id="progress-bar-inner" class="bg-brand-dark h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-          </div>
-          <span id="progress-text" class="text-[13px] font-bold text-brand-dark">0%</span>
-        </div>
-
-      </div>
-
-      <!-- Right Column: Campaign Banner Image -->
-      <div class="relative w-full lg:w-[460px] min-h-[260px] rounded-[24px] overflow-hidden border-4 border-brand-dark shrink-0 bg-gray-100">
-        <img id="camp-image" src="https://via.placeholder.com/600x400" class="w-full h-full object-cover" alt="Campaign Banner">
-        
-        <!-- Rating Badge -->
-        <div class="absolute bottom-3 right-3 bg-brand-dark/90 text-white px-3 py-1.5 rounded-full text-[12px] flex items-center gap-1.5 shadow-md">
-          <i class="fa-solid fa-star text-brand-yellow"></i>
-          <span id="camp-rating" class="font-bold">5.0</span>
-          <span id="camp-reviews" class="text-[#9BB0B5] font-light">| 0 Reviews</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Middle Section: Tabs & Sidebar -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-      
-      <!-- Left Side: Campaign Details Card -->
-      <div class="lg:col-span-2 custom-card p-6 md:p-8 flex flex-col justify-between min-h-[360px]">
-        
-        <div>
-          <!-- 💛 شريط التبويبات بالخط الأصفر الكامل الممتد بالأسفل -->
-          <div class="border-b-2 border-brand-yellow pb-3 flex space-x-12 text-sm font-semibold">
-            <button onclick="switchTab('about')" id="btn-about" class="text-brand-dark font-bold relative pb-3 border-b-2 border-brand-dark -mb-[14px] transition-colors cursor-pointer">
-              About
-            </button>
-            <button onclick="switchTab('requirements')" id="btn-requirements" class="text-gray-500 hover:text-brand-dark transition-colors cursor-pointer">
-              Requirements
-            </button>
-            <button onclick="switchTab('location')" id="btn-location" class="text-gray-500 hover:text-brand-dark transition-colors cursor-pointer">
-              Location
-            </button>
-          </div>
-
-          <!-- Tab Content: About -->
-          <div id="tab-about" class="mt-6 space-y-6 text-gray-600 text-sm leading-relaxed">
-            <p id="camp-about-text">
-              Loading details...
-            </p>
-
-            <div>
-              <h4 class="font-bold text-brand-dark text-base mb-3">What You Will Do :</h4>
-              <ul id="camp-requirements-list" class="space-y-2 list-none pl-1 text-gray-600">
-                <!-- Dynamic Content -->
-              </ul>
-            </div>
-          </div>
-
-          <!-- Tab Content: Requirements -->
-          <div id="tab-requirements" class="hidden mt-6 space-y-4 text-gray-600 text-sm leading-relaxed">
-            <h4 class="font-bold text-brand-dark text-base">Requirements & Criteria:</h4>
-            <p id="camp-responsibilities" class="whitespace-pre-line text-gray-700"></p>
-            <div class="border-t border-gray-100 my-2"></div>
-            <p id="camp-notes" class="whitespace-pre-line text-xs italic text-gray-500"></p>
-          </div>
-
-          <!-- Tab Content: Location -->
-          <div id="tab-location" class="hidden mt-6 space-y-4 text-gray-600 text-sm leading-relaxed">
-            <h4 class="font-bold text-brand-dark text-base">Meeting Point & Location:</h4>
-            <p class="flex items-center gap-2 text-gray-700">
-              <i class="fa-solid fa-location-dot text-brand-yellow"></i>
-              <span id="camp-meeting-point">---</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Action Button -->
-        <div class="pt-8 flex justify-center">
-          <button onclick="handleJoin()" class="bg-brand-dark hover:bg-opacity-95 text-white font-semibold px-10 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-md transition-all cursor-pointer">
-            <i class="fa-solid fa-right-to-bracket text-sm"></i>
-            <span>Join This Campaign</span>
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Right Side: Organization Details Card -->
-      <div class="custom-card p-6 md:p-8 space-y-5">
-        
-        <!-- 💛 العنوان مع الخط الأصفر المميز أسفله -->
-        <div>
-          <h3 class="text-lg font-bold text-brand-dark">About The Organization</h3>
-          <div class="w-8 h-1 bg-brand-yellow rounded-full mt-1"></div>
-        </div>
-
-        <!-- Organization Logo & Name -->
-        <div class="flex items-center gap-3 pt-1">
-          <div class="w-12 h-12 rounded-full border border-gray-200 overflow-hidden shrink-0">
-            <img id="sidebar-org-logo" src="https://via.placeholder.com/50" alt="Organization Logo" class="w-full h-full object-cover" />
-          </div>
-          <span id="sidebar-org-name" class="font-bold text-brand-dark text-sm">Loading...</span>
-        </div>
-
-        <!-- Description -->
-        <p id="sidebar-org-desc" class="text-xs text-brand-sub leading-relaxed">
-          Loading organization details...
-        </p>
-
-        <!-- Info Items -->
-        <div class="space-y-2.5 text-xs text-brand-sub pt-1">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-location-dot text-brand-yellow"></i>
-            <span id="sidebar-org-address">---</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-globe text-brand-yellow"></i>
-            <a id="sidebar-org-website" href="#" target="_blank" class="text-brand-sub hover:underline truncate">---</a>
-          </div>
-        </div>
-
-        <!-- Button -->
-        <div class="pt-2">
-          <button onclick="viewOrgProfile()" class="w-full bg-brand-dark hover:bg-opacity-95 text-white text-xs font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer">
-            <i class="fa-solid fa-bars-staggered"></i>
-            <span>View Organization</span>
-          </button>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- Bottom Section: Featured Campaigns & Contact Us -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start pt-2">
-      
-      <!-- Featured Campaigns Cards (2 Columns Width) -->
-      <div class="lg:col-span-2 custom-card p-6 md:p-8 space-y-6">
-        <div>
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-bold text-brand-dark">Featured Campaigns</h2>
-            <a href="#" class="text-xs text-brand-sub hover:text-brand-dark transition-colors">view all</a>
-          </div>
-          <!-- 💛 الخط الأصفر المميز أسفل العنوان -->
-          <div class="w-8 h-1 bg-brand-yellow rounded-full mt-1"></div>
-        </div>
-
-        <div id="featured-campaigns-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <!-- Dynamically populated via JS -->
-        </div>
-      </div>
-
-      <!-- Contact Us Card -->
-      <div class="custom-card p-6 md:p-8 space-y-6">
-        <div>
-          <h2 class="text-lg font-bold text-brand-dark">Contact Us</h2>
-          <!-- 💛 الخط الأصفر المميز أسفل العنوان -->
-          <div class="w-8 h-1 bg-brand-yellow rounded-full mt-1"></div>
-        </div>
-
-        <div class="space-y-4 text-xs font-medium">
-          <!-- Call Us -->
-          <div class="flex items-center gap-3.5">
-            <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
-              <i class="fa-solid fa-phone text-xs"></i>
-            </div>
-            <div>
-              <p class="font-bold text-brand-dark">Call us</p>
-              <p id="contact-phone" class="text-brand-sub">+963-906-156-2849</p>
-            </div>
-          </div>
-
-          <!-- Mail Us -->
-          <div class="flex items-center gap-3.5">
-            <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
-              <i class="fa-solid fa-envelope text-xs"></i>
-            </div>
-            <div>
-              <p class="font-bold text-brand-dark">Mail Us</p>
-              <p id="contact-email" class="text-brand-sub">Athar@gmail.com</p>
-            </div>
-          </div>
-
-          <!-- Visit Us -->
-          <div class="flex items-center gap-3.5">
-            <div class="w-9 h-9 rounded-full bg-brand-dark text-white flex items-center justify-center shrink-0">
-              <i class="fa-solid fa-location-dot text-xs"></i>
-            </div>
-            <div>
-              <p class="font-bold text-brand-dark">Visit Us</p>
-              <p id="contact-address" class="text-brand-sub">Syria-Aleppo</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Report Issue Button -->
-        <button onclick="alert('Opening Issue Report Dialog...')" class="w-full bg-brand-dark hover:bg-opacity-95 text-white text-xs font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md mt-4">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          <span>Report Issue</span>
-        </button>
-      </div>
-
-    </div>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-brand-dark text-white text-center py-4 text-xs font-normal mt-6">
-    All Rights Reserved © Athar Platform.
-  </footer>
-
-  <!-- 3️⃣ JavaScript API Fetch & Logic Integration -->
+  <!-- 🟢 JavaScript Logic -->
   <script>
     const BASE_URL = 'http://127.0.0.1:8000';
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const CAMPAIGN_ID = urlParams.get('id') || 1;
+    let loadedQuestions = [];
+    let userAnswers = {};
 
-    let currentOrgId = null;
-
-    function getStorageUrl(path) {
-      if (!path) return 'https://via.placeholder.com/600x400';
-      if (path.startsWith('http://') || path.startsWith('https://')) return path;
-      return `${BASE_URL}/${path.replace(/^\//, '')}`;
+    function getToken() {
+      return localStorage.getItem('token') || localStorage.getItem('auth_token');
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchCampaignDetails(CAMPAIGN_ID);
-    });
+    // Modal Visibility Toggle
+    function openJoinModal() {
+      document.getElementById('join-modal-overlay').classList.remove('hidden');
+      goToStep1();
+    }
 
-    async function fetchCampaignDetails(id) {
+    function closeJoinModal() {
+      document.getElementById('join-modal-overlay').classList.add('hidden');
+    }
+
+    function toggleContinueBtn() {
+      const isChecked = document.getElementById('agreement-check').checked;
+      document.getElementById('btn-continue-step1').disabled = !isChecked;
+    }
+
+    // Stepper Navigation
+    function goToStep1() {
+      hideAllSteps();
+      document.getElementById('step-1-content').classList.remove('hidden');
+      updateStepperUI(1);
+    }
+
+    async function goToStep2() {
+      hideAllSteps();
+      document.getElementById('step-2-content').classList.remove('hidden');
+      updateStepperUI(2);
+
+      // Fetch campaign questions from backend if empty
+      if (loadedQuestions.length === 0) {
+        await loadCampaignQuestions();
+      }
+    }
+
+    function goToStep3() {
+      hideAllSteps();
+      document.getElementById('step-3-content').classList.remove('hidden');
+      updateStepperUI(3);
+    }
+
+    function hideAllSteps() {
+      document.getElementById('step-1-content').classList.add('hidden');
+      document.getElementById('step-2-content').classList.add('hidden');
+      document.getElementById('step-3-content').classList.add('hidden');
+    }
+
+    function updateStepperUI(step) {
+      const circle1 = document.getElementById('step-1-circle');
+      const circle2 = document.getElementById('step-2-circle');
+      const circle3 = document.getElementById('step-3-circle');
+      
+      const line = document.getElementById('step-line-progress');
+
+      if (step === 1) {
+        line.style.width = '0%';
+        circle1.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
+        circle2.className = "w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm";
+        circle3.className = "w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm";
+      } else if (step === 2) {
+        line.style.width = '50%';
+        circle1.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
+        circle2.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
+        circle3.className = "w-9 h-9 rounded-full bg-gray-600/70 text-white font-bold flex items-center justify-center text-sm";
+      } else if (step === 3) {
+        line.style.width = '100%';
+        circle1.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
+        circle2.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
+        circle3.className = "w-9 h-9 rounded-full bg-brand-yellow text-brand-dark font-bold flex items-center justify-center text-sm shadow-md";
+      }
+    }
+
+    // Render Questions dynamically
+    async function loadCampaignQuestions() {
+      const container = document.getElementById('questions-container');
+      container.innerHTML = '<p class="text-xs text-center text-gray-400">Loading questions...</p>';
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const campaignId = urlParams.get('id') || 2;
+
       try {
-        const response = await fetch(`${BASE_URL}/api/campaigns/${id}`);
+        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}`);
         const result = await response.json();
-
-        if (response.ok && (result.status === 'success' || result.data)) {
-          const data = result.data || result;
-          renderData(data);
-        } else {
-          alert('تعذر جلب تفاصيل الحملة المطلوبة');
-        }
-      } catch (error) {
-        console.error("API Fetch Error:", error);
-      } finally {
-        document.getElementById('loading-spinner').classList.add('hidden');
-      }
-    }
-
-    function renderData(data) {
-      const camp = data.campaign_details || {};
-      const org = data.organization || {};
-      const contact = data.contact_us || {};
-      const featured = data.featured_campaigns || [];
-
-      currentOrgId = org.id;
-
-      // Top Overview
-      document.getElementById('camp-title').innerText = camp.title || 'Tree Planting Campaign';
-      document.getElementById('camp-image').src = getStorageUrl(camp.image_url);
-      document.getElementById('camp-date').innerText = camp.date || '23/5/2026';
-      document.getElementById('camp-location').innerText = camp.location || 'Aleppo, The Public Park';
-      document.getElementById('camp-time').innerText = camp.time || '9:00 AM';
-
-      const isRemote = (camp.type || '').toLowerCase() === 'remote';
-      document.getElementById('camp-type-text').innerText = isRemote ? 'Remote' : 'On-Ground';
-      document.getElementById('camp-type-icon').className = isRemote ? 'fa-solid fa-laptop text-[13px]' : 'fa-solid fa-location-dot text-[13px]';
-
-      const needed = parseInt(camp.volunteers_needed) || 60;
-      const registered = parseInt(camp.volunteers_registered) || 44;
-      const remaining = parseInt(camp.volunteers_remaining) || Math.max(0, needed - registered);
-      const percent = Math.min(100, Math.round((registered / needed) * 100));
-
-      document.getElementById('vol-needed').innerText = needed;
-      document.getElementById('vol-registered').innerText = registered;
-      document.getElementById('vol-remaining').innerText = remaining;
-      document.getElementById('progress-bar-inner').style.width = `${percent}%`;
-      document.getElementById('progress-text').innerText = `${percent}%`;
-
-      document.getElementById('camp-rating').innerText = camp.rating || '5';
-      document.getElementById('camp-reviews').innerText = `| ${camp.reviews_count || 100} Reviews`;
-
-      document.getElementById('org-small-name').innerText = org.name || 'The Lifa Organization';
-      document.getElementById('org-small-logo').src = getStorageUrl(org.logo_url);
-
-      // Tabs Data
-      document.getElementById('camp-about-text').innerText = camp.about || 'Join Us In Planting 500 Trees To Improve Air Quality, Expand Green Spaces, And Create A Healthier Environment For Future Generations. This Campaign Brings Volunteers Together To Make A Positive Impact On The Community And Promote Sustainable Living.';
-      document.getElementById('camp-responsibilities').innerText = camp.responsibilities || camp.requirements || '• Participants Must Be 18 Years Old Or Above.\n• Volunteers Are Expected To Follow All Safety Guidelines Provided By The Organizers.\n• Commitment To The Campaign Schedule And Teamwork Is Highly Encouraged.';
-      document.getElementById('camp-notes').innerText = camp.important_notes ? `Note: ${camp.important_notes}` : '';
-      document.getElementById('camp-meeting-point').innerText = `${camp.location || 'Aleppo, The Public Park'} ${camp.meeting_point ? '- ' + camp.meeting_point : ''}`.trim();
-
-      // Bullet points
-      const reqContainer = document.getElementById('camp-requirements-list');
-      reqContainer.innerHTML = '';
-      const reqSource = camp.requirements || camp.tasks;
-      
-      if (reqSource) {
-        const lines = Array.isArray(reqSource) ? reqSource : reqSource.split('\n');
-        lines.forEach(line => {
-          if (line.trim()) {
-            reqContainer.innerHTML += `
-              <li class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block shrink-0"></span>
-                <span>${line.replace(/^•\s*/, '')}</span>
-              </li>`;
-          }
-        });
-      } else {
-        reqContainer.innerHTML = `
-          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block"></span><span>Plant Trees In Designated Areas.</span></li>
-          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block"></span><span>Assist With Tools And Activity Preparation.</span></li>
-          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gray-700 rounded-full inline-block"></span><span>Help Clean And Organize The Area.</span></li>
-        `;
-      }
-
-      // Sidebar Data
-      document.getElementById('sidebar-org-name').innerText = org.name || 'The Lifa Organization';
-      document.getElementById('sidebar-org-logo').src = getStorageUrl(org.logo_url);
-      document.getElementById('sidebar-org-desc').innerText = org.description || 'A non-profit organization dedicated to environmental protection and community development through volunteer initiatives and awareness campaigns';
-      document.getElementById('sidebar-org-address').innerText = org.address || 'Hama, al furkan';
-      
-      const websiteUrl = org.website_url || 'www.thelife.com';
-      const webElement = document.getElementById('sidebar-org-website');
-      webElement.innerText = websiteUrl.replace(/^https?:\/\//, '');
-      webElement.href = websiteUrl.startsWith('http') ? websiteUrl : `https://${websiteUrl}`;
-
-      // Contact Us
-      if (contact.phone) document.getElementById('contact-phone').innerText = contact.phone;
-      if (contact.email) document.getElementById('contact-email').innerText = contact.email;
-      if (contact.address) document.getElementById('contact-address').innerText = contact.address;
-
-      // Featured Campaigns
-      const featContainer = document.getElementById('featured-campaigns-container');
-      featContainer.innerHTML = '';
-
-      const itemsToRender = (featured && featured.length > 0) ? featured : [
-        { id: 1, title: 'Blood Donation Campaign', org_name: 'Sanad', location: 'Aleppo, al zahraa', rating: 5, reviews_count: 100 },
-        { id: 2, title: 'Blood Donation Campaign', org_name: 'Sanad', location: 'Aleppo, al zahraa', rating: 5, reviews_count: 100 },
-        { id: 3, title: 'Blood Donation Campaign', org_name: 'Sanad', location: 'Aleppo, al zahraa', rating: 5, reviews_count: 100 }
-      ];
-
-      itemsToRender.forEach(item => {
-        featContainer.innerHTML += `
-          <div class="bg-white rounded-[24px] p-4 border border-gray-100 shadow-sm flex flex-col justify-between items-center text-center space-y-3">
-            <div class="w-full h-24 rounded-[18px] overflow-hidden border-2 border-brand-dark bg-gray-50 flex items-center justify-center">
-              <img src="${getStorageUrl(item.image_url)}" class="w-full h-full object-cover" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200x120'">
-            </div>
-            <h3 class="font-semibold text-[13px] text-brand-dark line-clamp-1 w-full">${item.title}</h3>
-            <div class="text-[11px] text-brand-sub space-y-1 w-full text-left pl-1">
-              <p class="flex items-center gap-1.5"><i class="fa-solid fa-hands-holding-child text-brand-yellow"></i> ${item.org_name || 'Sanad'}</p>
-              <p class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-brand-yellow"></i> ${item.location || 'Aleppo, al zahraa'}</p>
-              <p class="flex items-center gap-1.5"><i class="fa-solid fa-star text-brand-yellow"></i> ${item.rating || 5} | ${item.reviews_count || 100} Reviews</p>
-            </div>
-            <button onclick="window.location.href='?id=${item.id}'" class="w-full bg-brand-dark text-white text-[12px] font-medium py-2 rounded-[12px] hover:opacity-90 transition cursor-pointer">
-              See details
-            </button>
-          </div>
-        `;
-      });
-    }
-
-    function switchTab(tabName) {
-      const tabs = ['about', 'requirements', 'location'];
-      
-      tabs.forEach(t => {
-        const content = document.getElementById(`tab-${t}`);
-        const btn = document.getElementById(`btn-${t}`);
         
-        if (t === tabName) {
-          content.classList.remove('hidden');
-          btn.className = "text-brand-dark font-bold relative pb-3 border-b-2 border-brand-dark -mb-[14px] transition-colors cursor-pointer";
-        } else {
-          content.classList.add('hidden');
-          btn.className = "text-gray-500 hover:text-brand-dark transition-colors cursor-pointer";
+        const questions = result.data?.questions || result.data?.campaign_details?.questions || [];
+        loadedQuestions = questions;
+
+        if (questions.length === 0) {
+          container.innerHTML = '<p class="text-xs text-center text-gray-400">No test questions required for this campaign.</p>';
+          return;
         }
-      });
+
+        container.innerHTML = '';
+        questions.forEach((q, index) => {
+          container.innerHTML += `
+            <div class="bg-gray-800/50 p-4 rounded-2xl border border-white/5 space-y-3">
+              <p class="text-xs font-semibold text-white">${index + 1}. ${q.question_text}</p>
+              <div class="space-y-2 text-xs text-gray-300">
+                ${['a', 'b', 'c', 'd'].map(opt => q[`option_${opt}`] ? `
+                  <label class="flex items-center gap-2 bg-gray-900/40 p-2.5 rounded-xl cursor-pointer hover:bg-gray-900/80 transition">
+                    <input type="radio" name="q_${q.id || index}" value="${opt}" onchange="saveAnswer(${q.id || index}, '${opt}')" class="accent-brand-yellow">
+                    <span>${q[`option_${opt}`]}</span>
+                  </label>
+                ` : '').join('')}
+              </div>
+            </div>
+          `;
+        });
+      } catch (e) {
+        console.error(e);
+        container.innerHTML = '<p class="text-xs text-center text-red-400">Failed to load test questions.</p>';
+      }
     }
 
-    function handleJoin() {
-      alert(`🎉 Sending join application for campaign ID: ${CAMPAIGN_ID}`);
+    function saveAnswer(qId, val) {
+      userAnswers[qId] = val;
     }
 
-    function viewOrgProfile() {
-      if (currentOrgId) {
-        alert(`Navigating to Organization ID: ${currentOrgId}`);
+    // Submit API Integration
+    async function submitTestAndJoin() {
+      const token = getToken();
+      if (!token) {
+        alert('Please login first!');
+        return;
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const campaignId = urlParams.get('id') || 2;
+
+      try {
+        const response = await fetch(`${BASE_URL}/api/campaigns/${campaignId}/join`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ answers: userAnswers })
+        });
+
+        if (response.ok) {
+          goToStep3();
+        } else {
+          const res = await response.json();
+          alert(res.message || 'Submission failed');
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Server Connection Error!');
       }
     }
   </script>
-
 </body>
 </html>
