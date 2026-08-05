@@ -1,176 +1,100 @@
-import 'package:flutter/material.dart';
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المخبر الطبي</title>
+    <!-- استخدام Tailwind CSS للتصميم السريع -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 h-screen flex overflow-hidden">
 
-void main() {
-  runApp(const MedicalLabApp());
-}
+    <!-- القائمة الجانبية (Sidebar) - كحلي داكن -->
+    <aside class="w-64 bg-[#0F172A] text-white flex flex-col justify-between">
+        <div>
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-white">مخبر الشفاء الطبي</h1>
+                <p class="text-xs text-slate-400 mt-1">إصدار سطح المكتب</p>
+            </div>
+            <div class="border-t border-[#1E293B] mx-4"></div>
+            <nav class="mt-4 space-y-1 px-3">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1E293B] text-white font-semibold">
+                    <span>👥</span> الاستقبال وإدارة المرضى
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white transition">
+                    <span>🔬</span> إدخال النتائج
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white transition">
+                    <span>💰</span> الفواتير والحسابات
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white transition">
+                    <span>⚙️</span> إعدادات النظام
+                </a>
+            </nav>
+        </div>
+        <div class="p-4 text-xs text-slate-500 text-center border-t border-[#1E293B]">
+            جميع الحقوق محفوظة © 2026
+        </div>
+    </aside>
 
-class MedicalLabApp extends StatelessWidget {
-  const MedicalLabApp({super.key});
+    <!-- منطقة المحتوى الرئيسي -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <!-- الشريط العلوي -->
+        <header class="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between shadow-sm">
+            <h2 class="text-xl font-bold text-[#0F172A]">الاستقبال وإدارة المرضى</h2>
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-slate-500">مرحباً، مشرف النظام</span>
+                <div class="w-10 h-10 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold">A</div>
+            </div>
+        </header>
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Medical Lab System',
-      theme: ThemeData(
-        useMaterial3: true,
-        // اعتماد اللون الكحلي والأبيض
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF0F172A),
-          primary: const Color(0xFF0F172A),
-          surface: const Color(0xFFF8FAFC),
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-        fontFamily: 'Cairo', // خط عربي مريح (تأكد من إضافته لاحقاً إن أردت)
-      ),
-      home: const MainDashboardScreen(),
-    );
-  }
-}
-
-class MainDashboardScreen extends StatefulWidget {
-  const MainDashboardScreen({super.key});
-
-  @override
-  State<MainDashboardScreen> createState() => _MainDashboardScreenState();
-}
-
-class _MainDashboardScreenState extends State<MainDashboardScreen> {
-  int _selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          // القائمة الجانبية (Sidebar) - لون كحلي داكن
-          Container(
-            width: 260,
-            color: const Color(0xFF0F172A),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: Text(
-                    'مخبر الشفاء الطبي',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const Divider(color: Color(0xFF1E293B), height: 1),
-                _buildNavItem(Icons.people_outline, 'الاستقبال والبطاقات', 0),
-                _buildNavItem(Icons.science_outlined, 'إدخال النتائج', 1),
-                _buildNavItem(Icons.receipt_long_outlined, 'الفواتير والحسابات', 2),
-                _buildNavItem(Icons.settings_outlined, 'الإعدادات', 3),
-              ],
-            ),
-          ),
-          
-          // محتوى الشاشة الرئيسي (Content Area) - خلفية بيضاء ثلجية نظيفة
-          Expanded(
-            child: Column(
-              children: [
-                // الشريط العُلوي (Top Navbar)
-                Container(
-                  height: 70,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _getTitle(_selectedIndex),
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF0F172A),
-                        ),
-                      ),
-                      const Row(
-                        children: [
-                          Icon(Icons.notifications_none, color: Color(0xFF64748B)),
-                          SizedBox(width: 16),
-                          CircleAvatar(
-                            backgroundColor: Color(0xFF0F172A),
-                            child: Text('A', style: TextStyle(color: Colors.white)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+        <!-- مساحة العمل -->
+        <div class="flex-1 p-8 overflow-y-auto">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold text-slate-800">قائمة المرضى اليوم</h3>
+                    <button class="bg-[#0F172A] text-white px-4 py-2 rounded-lg text-sm hover:bg-slate-800 transition">+ إضافة مريض جديد</button>
+                </div>
                 
-                // مساحة العمل المتغيرة حسب القائمة
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.02),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          'هنا سيظهر محتوى: ${_getTitle(_selectedIndex)}',
-                          style: const TextStyle(color: Color(0xFF64748B), fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+                <!-- جدول تجريبي -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-500 text-sm">
+                                <th class="pb-3 px-4">رقم الزيارة</th>
+                                <th class="pb-3 px-4">اسم المريض</th>
+                                <th class="pb-3 px-4">العمر / الجنس</th>
+                                <th class="pb-3 px-4">التحاليل المطلوبة</th>
+                                <th class="pb-3 px-4">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4 font-semibold text-[#0F172A]">#023</td>
+                                <td class="py-3 px-4">بيان عاصي المصري</td>
+                                <td class="py-3 px-4">25 / أنثى</td>
+                                <td class="py-3 px-4 text-slate-600">CBC, Lipid Profile, HbA1c</td>
+                                <td class="py-3 px-4"><span class="bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full text-xs font-semibold">بانتظار العينة</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4 font-semibold text-[#0F172A]">#024</td>
+                                <td class="py-3 px-4">محمد أحمد خليل</td>
+                                <td class="py-3 px-4">34 / ذكر</td>
+                                <td class="py-3 px-4 text-slate-600">Blood Sugar, TSH</td>
+                                <td class="py-3 px-4"><span class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-xs font-semibold">مكتمل ومعتمد</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-  Widget _buildNavItem(IconData icon, String title, int index) {
-    bool isSelected = _selectedIndex == index;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => setState(() => _selectedIndex = index),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          color: isSelected ? const Color(0xFF1E293B) : Colors.transparent,
-          child: Row(
-            children: [
-              Icon(icon, color: isSelected ? Colors.white : const Color(0xFF94A3B8)),
-              const SizedBox(width: 16),
-              Text(
-                title,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : const Color(0xFF94A3B8),
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+    </main>
 
-  String _getTitle(int index) {
-    switch (index) {
-      case 0: return 'الاستقبال وإدارة المرضى';
-      case 1: return 'نتائج التحاليل المخبرية';
-      case 2: return 'الفواتير والتقارير المالية';
-      case 3: return 'إعدادات النظام والتحاليل';
-      default: return '';
-    }
-  }
-}
+</body>
+</html>
