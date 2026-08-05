@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة المخبر الطبي</title>
-    <!-- استخدام Tailwind CSS للتصميم السريع -->
+    <title>نظام إدارة المخبر الطبي - إدخال النتائج</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,7 +12,7 @@
 </head>
 <body class="bg-[#F8FAFC] text-slate-800 h-screen flex overflow-hidden">
 
-    <!-- القائمة الجانبية (Sidebar) - كحلي داكن -->
+    <!-- القائمة الجانبية (Sidebar) -->
     <aside class="w-64 bg-[#0F172A] text-white flex flex-col justify-between">
         <div>
             <div class="p-6">
@@ -22,10 +21,10 @@
             </div>
             <div class="border-t border-[#1E293B] mx-4"></div>
             <nav class="mt-4 space-y-1 px-3">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1E293B] text-white font-semibold">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white transition">
                     <span>👥</span> الاستقبال وإدارة المرضى
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white transition">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1E293B] text-white font-semibold">
                     <span>🔬</span> إدخال النتائج
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white transition">
@@ -41,56 +40,102 @@
         </div>
     </aside>
 
-    <!-- منطقة المحتوى الرئيسي -->
+    <!-- محتوى الشاشة الرئيسي -->
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
         
         <!-- الشريط العلوي -->
         <header class="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between shadow-sm">
-            <h2 class="text-xl font-bold text-[#0F172A]">الاستقبال وإدارة المرضى</h2>
+            <h2 class="text-xl font-bold text-[#0F172A]">إدخال واعتماد نتائج التحاليل</h2>
             <div class="flex items-center gap-4">
-                <span class="text-sm text-slate-500">مرحباً، مشرف النظام</span>
-                <div class="w-10 h-10 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold">A</div>
+                <span class="text-sm text-slate-500">مرحباً، فني المخبر</span>
+                <div class="w-10 h-10 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold">L</div>
             </div>
         </header>
 
         <!-- مساحة العمل -->
         <div class="flex-1 p-8 overflow-y-auto">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">قائمة المرضى اليوم</h3>
-                    <button class="bg-[#0F172A] text-white px-4 py-2 rounded-lg text-sm hover:bg-slate-800 transition">+ إضافة مريض جديد</button>
-                </div>
+            <div class="grid grid-cols-12 gap-6 h-full">
                 
-                <!-- جدول تجريبي -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-200 text-slate-500 text-sm">
-                                <th class="pb-3 px-4">رقم الزيارة</th>
-                                <th class="pb-3 px-4">اسم المريض</th>
-                                <th class="pb-3 px-4">العمر / الجنس</th>
-                                <th class="pb-3 px-4">التحاليل المطلوبة</th>
-                                <th class="pb-3 px-4">الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50">
-                                <td class="py-3 px-4 font-semibold text-[#0F172A]">#023</td>
-                                <td class="py-3 px-4">بيان عاصي المصري</td>
-                                <td class="py-3 px-4">25 / أنثى</td>
-                                <td class="py-3 px-4 text-slate-600">CBC, Lipid Profile, HbA1c</td>
-                                <td class="py-3 px-4"><span class="bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full text-xs font-semibold">بانتظار العينة</span></td>
-                            </tr>
-                            <tr class="hover:bg-slate-50">
-                                <td class="py-3 px-4 font-semibold text-[#0F172A]">#024</td>
-                                <td class="py-3 px-4">محمد أحمد خليل</td>
-                                <td class="py-3 px-4">34 / ذكر</td>
-                                <td class="py-3 px-4 text-slate-600">Blood Sugar, TSH</td>
-                                <td class="py-3 px-4"><span class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-xs font-semibold">مكتمل ومعتمد</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- قائمة المرضى بانتظار النتائج (اليمين) -->
+                <div class="col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col">
+                    <h3 class="text-md font-bold text-slate-800 mb-4">قائمة العينات بانتظار النتائج</h3>
+                    <div class="space-y-3 overflow-y-auto flex-1">
+                        <!-- عنصر مريض 1 (نشط) -->
+                        <div class="p-3 rounded-lg bg-slate-50 border-r-4 border-[#0F172A] cursor-pointer">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-sm text-[#0F172A]">بيان عاصي المصري</span>
+                                <span class="text-xs text-slate-400">#023</span>
+                            </div>
+                            <p class="text-xs text-slate-500">CBC, Biochemistry</p>
+                        </div>
+                        <!-- عنصر مريض 2 -->
+                        <div class="p-3 rounded-lg hover:bg-slate-50 border border-slate-100 cursor-pointer transition">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-sm text-slate-700">محمد أحمد خليل</span>
+                                <span class="text-xs text-slate-400">#017</span>
+                            </div>
+                            <p class="text-xs text-slate-500">Vitamin D, TSH</p>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- نموذج إدخال القيم (اليسار) -->
+                <div class="col-span-8 bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">إدخال نتائج: بيان عاصي المصري</h3>
+                                <p class="text-xs text-slate-400">العمر: 25 سنة | الجنس: أنثى | رقم الزيارة: 023</p>
+                            </div>
+                            <span class="bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-xs font-semibold">قيد الإدخال</span>
+                        </div>
+
+                        <!-- جدول إدخال التحاليل -->
+                        <table class="w-full text-right border-collapse">
+                            <thead>
+                                <tr class="text-slate-400 text-xs border-b border-slate-100">
+                                    <th class="pb-2">اسم التحليل (Parameter)</th>
+                                    <th class="pb-2">النتيجة المُدخلة</th>
+                                    <th class="pb-2">القيم الطبيعية (Normal Range)</th>
+                                    <th class="pb-2">الوحدة</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm divide-y divide-slate-50">
+                                <tr>
+                                    <td class="py-3 font-semibold text-slate-700">Hemoglobin (Hgb)</td>
+                                    <td class="py-3">
+                                        <input type="text" value="13.2" class="border border-slate-300 rounded-lg px-3 py-1.5 w-32 focus:outline-none focus:border-[#0F172A]">
+                                    </td>
+                                    <td class="py-3 text-slate-400 text-xs">12.0 - 15.5</td>
+                                    <td class="py-3 text-slate-500 text-xs">g/dL</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 font-semibold text-slate-700">WBCs</td>
+                                    <td class="py-3">
+                                        <input type="text" value="6.5" class="border border-slate-300 rounded-lg px-3 py-1.5 w-32 focus:outline-none focus:border-[#0F172A]">
+                                    </td>
+                                    <td class="py-3 text-slate-400 text-xs">4.0 - 11.0</td>
+                                    <td class="py-3 text-slate-500 text-xs">10^3/µL</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 font-semibold text-slate-700">Glucose Fasting</td>
+                                    <td class="py-3">
+                                        <input type="text" value="92" class="border border-slate-300 rounded-lg px-3 py-1.5 w-32 focus:outline-none focus:border-[#0F172A]">
+                                    </td>
+                                    <td class="py-3 text-slate-400 text-xs">70 - 99</td>
+                                    <td class="py-3 text-slate-500 text-xs">mg/dL</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- أزرار الحفظ والاعتماد -->
+                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button class="px-5 py-2 rounded-lg border border-slate-300 text-slate-600 text-sm hover:bg-slate-50 transition">حفظ مؤقت</button>
+                        <button class="px-5 py-2 rounded-lg bg-[#0F172A] text-white text-sm hover:bg-slate-800 transition">اعتماد الطباعة (Approve)</button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
