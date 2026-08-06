@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>الإعدادات والطباعة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Cairo', sans-serif; } </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 h-screen flex overflow-hidden">
+    <aside class="w-64 bg-[#0F172A] text-white flex flex-col justify-between">
+        <div>
+            <div class="p-6"><h1 class="text-xl font-bold">مخبر الشفاء الطبي</h1></div>
+            <nav class="mt-4 space-y-1 px-3">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white"><span>👥</span> الاستقبال</a>
+                <a href="results.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white"><span>🔬</span> إدخال النتائج</a>
+                <a href="search.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-[#1E293B] hover:text-white"><span>🔍</span> بحث السجلات</a>
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1E293B] text-white font-semibold"><span>⚙️</span> الإعدادات والطباعة</a>
+            </nav>
+        </div>
+    </aside>
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <header class="h-20 bg-white border-b px-8 flex items-center justify-between"><h2 class="text-xl font-bold text-[#0F172A]">إعدادات النظام وشكل الطباعة</h2></header>
+        <div class="flex-1 p-8 overflow-y-auto">
+            <div class="bg-white rounded-xl shadow-sm border p-6 max-w-5xl mx-auto">
+                <h3 class="text-lg font-bold mb-4">تخصيص قالب التقارير المطبوعة والنطاقات (Ranges)</h3>
+                <p class="text-sm text-slate-500 mb-6">يمكنك تعديل القيم الطبيعية للتحاليل وتخصيص إعدادات ترويسة التقرير.</p>
+                <button class="px-6 py-2 rounded-lg bg-[#0F172A] text-white text-sm">حفظ التعديلات</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
